@@ -4,6 +4,8 @@ from operator import itemgetter, attrgetter
 import numpy
 from scipy.cluster.vq import *
 
+# put this in a function so that it can do this
+# but otherise pull from the db
 # allow the command line to take in arguments
 script, filename = argv
 
@@ -74,10 +76,12 @@ def clean_data(sorted_latslngs):
 	for i in sorted_latslngs:
 		lat = i[0]		
 		lng = i[1]
+		upper_right_corner = lat < 37.81 and lng > -122.52
+		lower_left_corner = lat > 37.72 and lng < -122.36
 		# upper right corner = 37.81, -122.52
-		if lat < 37.81 and lng > -122.52:
+		if upper_right_corner:
 			# lower left corner = 37.72, -122.36
-			if lat > 37.72 and lng < -122.36:
+			if lower_left_corner:
 				clean_lats_and_longs.append((lat, lng))
 
 	return clean_lats_and_longs
@@ -107,13 +111,29 @@ def kmeans(sorted_data):
 	num = numpy.array(cleaned_data)
 	# use the kmeans2 method on the data and specify the
 	# number of hot spots
-	hot_spots_data = kmeans2(num, 10)
+	hot_spots_data = kmeans2(num, 5)
 
 	return hot_spots_data
+
+def convert_kmeans_to_list(kmeans_tuple):
+	#squeezed = numpy.squeeze(kmeans_array).shape
+	kmeans_array = kmeans_tuple[0]
+
+	ret = []
+
+	for k in kmeans_array:
+		latitude = k[0]
+		longitude = k[1]
+		ret.append((latitude, longitude))
+
+	return ret
+
+
 
 # call the functions
 lats_and_longs = position_and_votes(bike_locations)
 sorted_by_lats = sort_lats(lats_and_longs)
 cleaned_data = clean_data(sorted_by_lats)
 hot_spots = kmeans(cleaned_data)
+converted_kmeans = convert_kmeans_to_list(hot_spots)
 
