@@ -3,22 +3,32 @@ import json
 from operator import itemgetter, attrgetter
 import numpy
 from scipy.cluster.vq import *
+import model
 
 # put this in a function so that it can do this
 # but otherise pull from the db
 # allow the command line to take in arguments
 script, filename = argv
 
-# open the file
-f = open(filename)
-# read the file
-data_string = f.read()
-# close the file
-f.close
+if filename:
 
-# convert the data from json to python
-# bike_locations is a list of dictionaries
-bike_locations = json.loads(data_string)
+	# open the file
+	f = open(filename)
+	# read the file
+	data_string = f.read()
+	# close the file
+	f.close
+
+	# convert the data from json to python
+	# bike_locations is a list of dictionaries
+	bike_locations = json.loads(data_string)
+
+	lats_and_longs = position_and_votes(bike_locations)
+	sorted_by_lats = sort_lats(lats_and_longs)
+	cleaned_data = clean_data(sorted_by_lats)
+	hot_spots = kmeans(cleaned_data)
+	converted_kmeans = convert_kmeans_to_list(hot_spots)
+
 
 """
 bike_locations[0] is a dictionary
@@ -131,9 +141,9 @@ def convert_kmeans_to_list(kmeans_tuple):
 
 
 # call the functions
-lats_and_longs = position_and_votes(bike_locations)
-sorted_by_lats = sort_lats(lats_and_longs)
-cleaned_data = clean_data(sorted_by_lats)
-hot_spots = kmeans(cleaned_data)
-converted_kmeans = convert_kmeans_to_list(hot_spots)
+# lats_and_longs = position_and_votes(bike_locations)
+# sorted_by_lats = sort_lats(lats_and_longs)
+# cleaned_data = clean_data(sorted_by_lats)
+# hot_spots = kmeans(cleaned_data)
+# converted_kmeans = convert_kmeans_to_list(hot_spots)
 

@@ -37,7 +37,6 @@ class Current_Station(Base):
 			d["stationName"] = s.station_name
 			ret.append(d)
 
-		# print "%r" % ret
 		return ret
 
 
@@ -48,7 +47,18 @@ class Crowd_Sourced(Base):
 	longitude = Column(Numeric(11,8), nullable=False)
 	votes = Column(Integer, nullable=True)
 	name = Column(String(100), nullable=True)
-	elevation = Column(Numeric(11, 7), nullable=True)
+	elevation = Column(Numeric(11,7), nullable=True)
+
+	def to_dict(self):
+		# query the database
+		stations = session.query(Crowd_Sourced).all()
+		ret = []
+		for s in stations:
+			latitude = float(s.latitude)
+			longitude = float(s.longitude)
+			ret.append((latitude, longitude))
+
+		return ret
 
 class Possible_Station(Base):
 	# TODO: reseed the database with __tablename__ = "possible_stations"
@@ -68,7 +78,6 @@ class Possible_Station(Base):
 			d["longitude"] = float(s.longitude)
 			ret.append(d)
 
-		print ret
 		return ret
 
 def create_tables():
