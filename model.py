@@ -49,16 +49,23 @@ class Crowd_Sourced(Base):
 	name = Column(String(100), nullable=True)
 	elevation = Column(Numeric(11,7), nullable=True)
 
-	def to_dict(self):
+	def get_elevation(self):
 		# query the database
-		stations = session.query(Crowd_Sourced).all()
+		stations = session.query(Crowd_Sourced).order_by(Crowd_Sourced.latitude, Crowd_Sourced.longitude).all()
 		ret = []
 		for s in stations:
-			latitude = float(s.latitude)
-			longitude = float(s.longitude)
-			ret.append((latitude, longitude))
+			if s.elevation is not None:
+				d = {}
+				d["id"] = int(s.id)
+				d["latitude"] = float(s.latitude)
+				d["longitude"] = float(s.longitude)
+				d["elevation"] = float(s.elevation)
+
+				ret.append(d)
 
 		return ret
+
+
 
 class Possible_Station(Base):
 	# TODO: reseed the database with __tablename__ = "possible_stations"

@@ -26,16 +26,77 @@ def possible_stations():
 
 @app.route("/getelevation")
 def get_elevation():
-	pass
-	#ret = elevation.url
-	# for i in ret:
-	# 	print type(ret[0])
-	# loop through lats and longs
-	# add it to the https request
-	# https://maps.googleapis.com/maps/api/elevation/json?locations=latitude,longitude&sensor=false&key=AIzaSyC5k5lbiAeixFr-jxt4Oay-IAc0TgSp_To
+	the_app = model.Crowd_Sourced()
+	all_elevation = the_app.get_elevation()
+	#print all_elevation
+	# for each point, get the elevation, and check for the elevation of surrounding data points
+	# within .004 range of each lat/lng
+	d = {}
+	for i in all_elevation:
+		lat_i = i["latitude"]
+		high_lat_i = lat_i + .002
+		low_lat_i = lat_i - .002
+		lng_i = i["longitude"]
+		high_lng_i = lng_i + .002
+		low_lng_i = lng_i - .002
+		d[i["id"]] = {}
+		d[i["id"]]["latitude"] = lat_i
+		d[i["id"]]["longitude"] = lng_i
+		d[i["id"]]["elevation"] = i["elevation"]
+		d[i["id"]]["list of elevations"] = []
+		d[i["id"]]["elevation difference"] = ""
+		d[i["id"]]["elevation difference percentage"] = ""
+		for j in all_elevation:
+			lat_j = j["latitude"]
+			lng_j = j["longitude"]
+			if lat_i != lat_j and lng_i != lng_j:
+				if lat_j < (high_lat_i) and lat_j > (low_lat_i) and lng_j < (high_lng_i) and lng_j > (low_lng_i):
+					d[i["id"]]["list of elevations"].append(j["elevation"])
+					#sorted(d[i["id"]]["list of elevations"])
 
-	#return json.dumps(ret)
-	#return json.dumps(ret)
+	sorted_dict = sort_list_of_elevations(d)
+	difference = diff_low_high(sorted_dict)
+	percentage = calc_incline(difference)
+	return json.dumps(difference)
+
+
+# sort the list of elevations
+def sort_list_of_elevations(dictionary):
+	for d in dictionary:
+		new_list = sorted(dictionary[d]["list of elevations"])
+		dictionary[d]["list of elevations"] = new_list
+		
+	return dictionary
+
+
+#get the difference between the lowest and the highest
+def diff_low_high(dictionary):
+	for d in dictionary:
+		if dictionary[d]["list of elevations"] != []:
+			diff = max(dictionary[d]["list of elevations"])
+			dictionary[d]["elevation difference"] = diff 
+		else:
+			dictionary[d]["elevation difference"] = 0
+
+	return dictionary
+
+# calculte the elevation incline by dividing the rise by the run
+# 2112 is approximately .4 miles which is the difference between the highest points possible
+def calc_incline(dictionary):
+	for d in dictionary:
+		if dictionary[d]["elevation difference"] != 0:
+			dictionary[d]["elevation difference percentage"] = dictionary[d]["elevation difference"]/2112
+		else:
+			dictionary[d]["elevation difference percentage"] = 0
+
+	return dictionary
+
+#rank them from dissimilar to highly similar based on the difference
+#if similar, add additional vote(s)
+#if dissimilar, leave it alone	
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
