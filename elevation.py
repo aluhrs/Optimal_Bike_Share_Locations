@@ -10,7 +10,7 @@ def get_location(points):
 	
 	for i in range(len(points)):
 			if points[i].elevation == None:
-				if len(elevations) < 1500:
+				if len(elevations) < 2400:
 					id = points[i].id
 					latitude = points[i].latitude
 					longitude = points[i].longitude				
@@ -18,17 +18,12 @@ def get_location(points):
 					elevation_data = get_elevation(url)
 					elevation = parse(elevation_data)
 					curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
-					#print curr.elevation
 					curr.elevation = float(elevation)
-					#print curr.elevation
-					#db_elevation = float(elevation)
 					model.session.add(curr)
 					elevations.append(elevation)
 			
 	model.session.commit()
-	#print len(elevations)
 	print "The elevations have been added to the database"
-	#print elevations
 	#return elevations
 
 # use urllib2 to open the url

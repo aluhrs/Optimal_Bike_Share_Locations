@@ -5,7 +5,7 @@ function initialize() {
 
   // set the zoom level and where to center the map
   var mapOptions = {
-    center: new google.maps.LatLng(37.7577, -122.4376),
+    center: new google.maps.LatLng(37.7792149, -122.4414891),
     zoom: 13
   };
 
@@ -62,16 +62,19 @@ function initialize() {
     }
     
   });
-
+  
   map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+  map.controls[google.maps.ControlPosition.RIGHT_TOP].push(intro);
 
 }
 
 var legend;
+var intro;
 
 $(document).ready(function(){
   // cache the legend before the map wipes it from the DOM
   legend = document.getElementById("legend");
+  intro = document.getElementById("intro");
   // load the map
   google.maps.event.addDomListener(window, 'load', initialize);
 })

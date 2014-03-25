@@ -8,26 +8,7 @@ import model
 # put this in a function so that it can do this
 # but otherise pull from the db
 # allow the command line to take in arguments
-script, filename = argv
 
-if filename:
-
-	# open the file
-	f = open(filename)
-	# read the file
-	data_string = f.read()
-	# close the file
-	f.close
-
-	# convert the data from json to python
-	# bike_locations is a list of dictionaries
-	bike_locations = json.loads(data_string)
-
-	lats_and_longs = position_and_votes(bike_locations)
-	sorted_by_lats = sort_lats(lats_and_longs)
-	cleaned_data = clean_data(sorted_by_lats)
-	hot_spots = kmeans(cleaned_data)
-	converted_kmeans = convert_kmeans_to_list(hot_spots)
 
 
 """
@@ -96,6 +77,15 @@ def clean_data(sorted_latslngs):
 
 	return clean_lats_and_longs
 
+def create_lat_lnglist_from_db(db_data):
+	db_lats_and_longs = []
+	for data in db_data:
+		lat = data["latitude"]
+		lng = data["longitude"]
+		db_lats_and_longs.append((lat,lng))
+
+	return db_lats_and_longs
+
 """
 #####################
 K-Means Clustering:
@@ -118,10 +108,10 @@ def kmeans(sorted_data):
 	# put the sorted lats and longs into a useable format
 	# (numpy array matrix)
 	# for the k-means clustering algorithm
-	num = numpy.array(cleaned_data)
+	num = numpy.array(sorted_data)
 	# use the kmeans2 method on the data and specify the
 	# number of hot spots
-	hot_spots_data = kmeans2(num, 5)
+	hot_spots_data = kmeans2(num, 30)
 
 	return hot_spots_data
 
@@ -138,12 +128,59 @@ def convert_kmeans_to_list(kmeans_tuple):
 
 	return ret
 
+def create_file(hotspots):
+	new_file = open("./static/hot_spots.txt", 'w')
+	new_file.write(json.dumps(hotspots))
+	new_file.close()
+
+	print "Your file hot_spots.txt has been created."
 
 
-# call the functions
-# lats_and_longs = position_and_votes(bike_locations)
-# sorted_by_lats = sort_lats(lats_and_longs)
-# cleaned_data = clean_data(sorted_by_lats)
-# hot_spots = kmeans(cleaned_data)
-# converted_kmeans = convert_kmeans_to_list(hot_spots)
+if len(argv) == 2:
+	script, filename = argv
+	# open the file
+	f = open(filename)
+	# read the file
+	data_string = f.read()
+	# close the file
+	f.close
 
+	# convert the data from json to python
+	# bike_locations is a list of dictionaries
+	bike_locations = json.loads(data_string)
+	lats_and_longs = position_and_votes(bike_locations)
+	sorted_by_lats = sort_lats(lats_and_longs)
+	cleaned_data = clean_data(sorted_by_lats)
+	hot_spots = kmeans(cleaned_data)
+	converted_kmeans = convert_kmeans_to_list(hot_spots)
+	create_file(converted_kmeans)
+else:
+	the_app = model.Crowd_Sourced()
+	all_data = the_app.to_dict()
+	db_lat_lng = create_lat_lnglist_from_db(all_data)
+	hot_spots = kmeans(db_lat_lng)
+	converted_kmeans = convert_kmeans_to_list(hot_spots)
+	create_file(converted_kmeans)
+	
+
+
+
+
+
+#else:
+#call the functions and add the hot_spots to the database
+# def load_possible_stations(session):
+# 	with open("./static/hot_spots.txt") as f:
+# 		hot_spots = json.loads(f.read())
+# 		for spot in hot_spots:
+# 			latitude = float(spot[0])
+# 			longitude = float(spot[1])
+# 			# add a name at some point
+# 			hotspot = model.Possible_Station(latitude=latitude, longitude=longitude)
+# 			session.add(hotspot)
+# 		session.commit()
+# 		print "The Possible Stations have been added to the database."
+
+
+# if __name__ == "__main__":
+# 	bike_locations

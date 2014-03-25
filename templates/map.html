@@ -8,6 +8,7 @@
       body { height: 100%; margin: 0; padding: 0 }
       #map-canvas { height: 100%; width: 100% }
       #legend { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; }
+      #intro { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; }
     </style>
     <!-- SAVE API KEY IN A SEPERATE FILE!! -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5k5lbiAeixFr-jxt4Oay-IAc0TgSp_To&sensor=false">
@@ -19,6 +20,18 @@
   </head>
   <body>
     <div id="map-canvas"/>
-    <div id="legend"><h3>Legend</h3></div>
+    <div id="intro">
+      <h3>Find Optimal Bike Share Locations!</h3>
+      <p>The cats show the optimal bike share locations based on a crowdsourcing website.
+         Click on the checkboxes below to see the optimal locations change based on
+         the criteria you choose.</p>
+    </div>
+    <div id="legend">
+      <h3>Legend</h3>
+      <!--<div class="todo-list">-->
+        <input name="elevation1" value="elevation2" type="checkbox"></input>
+        <label id="elevation">Elevation</label>
+    </div>
+    </div>
   </body>
 </html>

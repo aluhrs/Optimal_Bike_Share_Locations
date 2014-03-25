@@ -7,13 +7,18 @@ from sqlalchemy import Column, Integer, String, DateTime, Text, Numeric
 
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
+# create a second thing for postgres
+# "sqlite://" instead of the config file
 engine = create_engine(config.DB_URI, echo=False)
 session = scoped_session(sessionmaker(bind=engine,
 									  autocommit = False,
 									  autoflush = False))
-
+# create a second thing for postgres
+# "postgres://" instead of the config file
 Base = declarative_base()
 Base.query = session.query_property()
+
+# then go through the classes and add the data to the postgre db?
 
 class Current_Station(Base):
 	__tablename__ = "current_stations"
@@ -46,8 +51,23 @@ class Crowd_Sourced(Base):
 	latitude = Column(Numeric(11,8), nullable=False)
 	longitude = Column(Numeric(11,8), nullable=False)
 	votes = Column(Integer, nullable=True)
-	name = Column(String(100), nullable=True)
+	name = Column(String(150), nullable=True)
 	elevation = Column(Numeric(11,7), nullable=True)
+
+	def to_dict(self):
+		# query the database
+		stations = session.query(Crowd_Sourced).all()
+		ret = []
+		for s in stations:
+			d = {}
+			d["id"] = int(s.id)
+			d["latitude"] = float(s.latitude)
+			d["longitude"] = float(s.longitude)
+			d["votes"] = s.votes
+			d["elevation"] = float(s.elevation)
+			ret.append(d)
+
+		return ret
 
 	def get_elevation(self):
 		# query the database
@@ -59,6 +79,7 @@ class Crowd_Sourced(Base):
 				d["id"] = int(s.id)
 				d["latitude"] = float(s.latitude)
 				d["longitude"] = float(s.longitude)
+				d["votes"] = int(s.votes)
 				d["elevation"] = float(s.elevation)
 
 				ret.append(d)
@@ -69,7 +90,7 @@ class Crowd_Sourced(Base):
 
 class Possible_Station(Base):
 	# TODO: reseed the database with __tablename__ = "possible_stations"
-	__tablename__ = "possible_station"
+	__tablename__ = "possible_stations"
 	id = Column(Integer, primary_key=True)
 	latitude = Column(Numeric(11, 8), nullable=False)
 	longitude = Column(Numeric(11, 8), nullable=False)

@@ -74,8 +74,8 @@ def clean_data(data):
 
 def main(session):
 	# pass
-	load_current_stations(session)
-	load_crowd_sourced_data(session)
+	#load_current_stations(session)
+	#load_crowd_sourced_data(session)
 	load_possible_stations(session)
 
 if __name__ == "__main__":
