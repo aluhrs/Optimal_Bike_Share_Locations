@@ -3,6 +3,9 @@
 var map;
 function initialize() {
 
+  $("#legend").css({"display":"block"});
+  $("#intro").css({"display":"block"});
+
   // set the zoom level and where to center the map
   var mapOptions = {
     center: new google.maps.LatLng(37.7792149, -122.4414891),
@@ -23,19 +26,23 @@ function initialize() {
   // var image = '/static/images/bikesharelogo.jpeg';
   var image = 'http://www.placekitten.com/32/32'; 
 
+  // wrap this whole thing in a function similar
+  // to how I did place the hot spots
+  var currStationList = []
   $.ajax({
     url: "/ajax/currentstations",
     dataType: "json"          
   }).done(function(stations) {
+    var lat, lng;
     for (var i=0; i<stations.length; i++) {
-      var lat = stations[i]["latitude"];
-      var lng = stations[i]["longitude"];
+      lat = stations[i]["latitude"];
+      lng = stations[i]["longitude"];
       if (stations[i]["city"] == "San Francisco") {
         // place the lat, longs on the map        
-        var marker = new google.maps.Marker({
-            position: new google.maps.LatLng(lat,lng),
-            map: map,
-            title: stations[i]["stationName"]
+        marker = new google.maps.Marker({
+          position: new google.maps.LatLng(lat,lng),
+          map: map,
+          title: stations[i]["stationName"]
             //icon: image
         });
       }
@@ -44,28 +51,49 @@ function initialize() {
   });
 
 
-  // jquery and ajax to loop through the list of hot spots
-  // and place the lat/longs on the map
-  $.ajax({
-    url: "/ajax/possiblestations",
-    dataType: "json"          
-  }).done(function(hotspots){
-    for (var i=0; i<hotspots.length; i++) {
-      var lat = hotspots[i]["latitude"];
-      var lng = hotspots[i]["longitude"];
-      var marker = new google.maps.Marker({
-          position: new google.maps.LatLng(lat,lng),
-          map: map,
-          title: "Possible Hot Spot",
-          icon: image
-      });
-    }
-    
-  });
+  placePossibleStations(image);
   
   map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
   map.controls[google.maps.ControlPosition.RIGHT_TOP].push(intro);
 
+}
+
+// Removes the markers from the map, but keeps them in the array.
+function clearMarkers() {
+  placeMarker(possibleStationsList, null);
+}
+
+function placeMarker(list, theMap){
+  for (var i=0; i<list.length; i++){
+    list[i].setMap(theMap);
+  }
+}
+
+var possibleStationsList = [];
+function placePossibleStations(image){
+  // jquery and ajax to loop through the list of hot spots
+  // and place the lat/longs on the map
+  if (possibleStationsList.length !== 0){
+    placeMarker(possibleStationsList, map);
+  } else {
+    $.ajax({
+      url: "/ajax/possiblestations",
+      dataType: "json"          
+    }).done(function(hotspots){
+      var lat, lng;
+      for (var i=0; i<hotspots.length; i++) {
+        lat = hotspots[i]["latitude"];
+        lng = hotspots[i]["longitude"];
+        possibleStationsList.push(new google.maps.Marker({
+          position: new google.maps.LatLng(lat,lng),
+          map: map,
+          title: "Possible Hot Spot",
+          icon: image
+        }));
+      }
+      placeMarker(possibleStationsList, map);     
+    });
+  }
 }
 
 var legend;
@@ -75,6 +103,36 @@ $(document).ready(function(){
   // cache the legend before the map wipes it from the DOM
   legend = document.getElementById("legend");
   intro = document.getElementById("intro");
+
+  $("#elevation").click(function(){
+    if($("#elevation").is(":checked")){
+      clearMarkers();
+      // $.ajax({
+      //   url: "/ajax/elevation",
+      //   dataType: "json"
+      // }).done(function(hotspots){
+      //   var lat, lng;
+      //   var image = 'http://www.placekitten.com/32/32'; 
+      //   for (var i=0; i<hotspots.length; i++){
+      //     lat = hotspots[i]["latitude"];
+      //     lng = hotspots[i]["longitude"];
+      //     marker = (new google.maps.Marker({
+      //       position: new google.maps.LatLng(lat,lng),
+      //       map: map,
+      //       title: "Possible Hot Spot",
+      //       icon: image
+      //     }));
+        //placeMarker(possibleStationsList, map); 
+      // }
+      //})
+      //add an ajax call to populate new markers based on elevation data
+    }
+    else {
+      placeMarker(possibleStationsList, map);
+    }
+  });
+  
+
   // load the map
   google.maps.event.addDomListener(window, 'load', initialize);
 })

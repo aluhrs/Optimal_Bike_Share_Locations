@@ -77,12 +77,18 @@ def clean_data(sorted_latslngs):
 
 	return clean_lats_and_longs
 
-def create_lat_lnglist_from_db(db_data):
+def create_lat_lng_list_from_db(db_data):
 	db_lats_and_longs = []
 	for data in db_data:
 		lat = data["latitude"]
 		lng = data["longitude"]
-		db_lats_and_longs.append((lat,lng))
+		num_of_appends = data["votes"]
+		if num_of_appends > 0:
+			for x in range(num_of_appends):
+				db_lats_and_longs.append((lat,lng))
+		else:
+			db_lats_and_longs.append((lat,lng))
+
 
 	return db_lats_and_longs
 
@@ -157,7 +163,7 @@ if len(argv) == 2:
 else:
 	the_app = model.Crowd_Sourced()
 	all_data = the_app.to_dict()
-	db_lat_lng = create_lat_lnglist_from_db(all_data)
+	db_lat_lng = create_lat_lng_list_from_db(all_data)
 	hot_spots = kmeans(db_lat_lng)
 	converted_kmeans = convert_kmeans_to_list(hot_spots)
 	create_file(converted_kmeans)
@@ -182,5 +188,7 @@ else:
 # 		print "The Possible Stations have been added to the database."
 
 
-# if __name__ == "__main__":
-# 	bike_locations
+
+#if __name__ == "__main__":
+
+   

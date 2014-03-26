@@ -7,8 +7,8 @@
       html { height: 100% }
       body { height: 100%; margin: 0; padding: 0 }
       #map-canvas { height: 100%; width: 100% }
-      #legend { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; }
-      #intro { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; }
+      #legend { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; display: none;}
+      #intro { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; display: none;}
     </style>
     <!-- SAVE API KEY IN A SEPERATE FILE!! -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5k5lbiAeixFr-jxt4Oay-IAc0TgSp_To&sensor=false">
@@ -29,8 +29,8 @@
     <div id="legend">
       <h3>Legend</h3>
       <!--<div class="todo-list">-->
-        <input name="elevation1" value="elevation2" type="checkbox"></input>
-        <label id="elevation">Elevation</label>
+        <input id="elevation" name="elevation1" value="elevation2" type="checkbox"></input>
+        <label id="elevation_label">Elevation</label>
     </div>
     </div>
   </body>
