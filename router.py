@@ -180,4 +180,4 @@ def send_to_db(dictionary):
 
 
 if __name__ == "__main__":
-    app.run(port=int(os.environ.get("PORT")), debug=True)
+    app.run(port=int(os.environ.get("PORT")))
