@@ -68,12 +68,14 @@ def clean_data(sorted_latslngs):
 		lat = i[0]		
 		lng = i[1]
 		upper_right_corner = lat < 37.81 and lng > -122.52
-		lower_left_corner = lat > 37.72 and lng < -122.36
-		# upper right corner = 37.81, -122.52
+		lower_left_corner = lat > 37.735 and lng < -122.377
+		urc_cbs = lat < 37.800904 and lng < -122.406113
+		llc_cbs = lat > 37.774679 and lng < -122.388593
 		if upper_right_corner:
-			# lower left corner = 37.72, -122.36
 			if lower_left_corner:
-				clean_lats_and_longs.append((lat, lng))
+				if urc_cbs:
+					if llc_cbs:
+						clean_lats_and_longs.append((lat, lng))
 
 	return clean_lats_and_longs
 

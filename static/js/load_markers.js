@@ -125,7 +125,6 @@ $(document).ready(function(){
         //placeMarker(possibleStationsList, map); 
       // }
       //})
-      //add an ajax call to populate new markers based on elevation data
     }
     else {
       placeMarker(possibleStationsList, map);

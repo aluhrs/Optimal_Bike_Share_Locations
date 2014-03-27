@@ -62,11 +62,14 @@ def clean_data(data):
 		names = i["name"]
 
 		upper_right_corner = lat < 37.81 and lng > -122.52
-		lower_left_corner = lat > 37.72 and lng < -122.36
-
+		lower_left_corner = lat > 37.735 and lng < -122.377
+		urc_cbs = lat < 37.800904 and lng < -122.406113
+		llc_cbs = lat > 37.774679 and lng < -122.388593
 		if upper_right_corner:
 			if lower_left_corner:
-				clean_data.append({"latitude": lat, "longitude": lng, "votes": vote,
+				if urc_cbs:
+					if llc_cbs:
+						clean_data.append({"latitude": lat, "longitude": lng, "votes": vote,
 												"name": names})
 
 	return clean_data

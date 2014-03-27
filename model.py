@@ -53,6 +53,12 @@ class Crowd_Sourced(Base):
 	votes = Column(Integer, nullable=True)
 	name = Column(String(150), nullable=True)
 	elevation = Column(Numeric(11,7), nullable=True)
+	el_reason = Column(String(100), nullable=True)
+	#grocery_reason = Column(String(100), nullable=True)
+	#transportation_reason = Column(String(100), nullable=True)
+	#food_reason = Column(String(100), nullable=True)
+	#other_poi_reason = Column(String(100), nullable=True)
+
 
 	def to_dict(self):
 		# query the database
@@ -63,7 +69,7 @@ class Crowd_Sourced(Base):
 			d["id"] = int(s.id)
 			d["latitude"] = float(s.latitude)
 			d["longitude"] = float(s.longitude)
-			d["votes"] = s.votes
+			d["votes"] = int(s.votes)
 			d["elevation"] = float(s.elevation)
 			ret.append(d)
 
