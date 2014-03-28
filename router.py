@@ -4,7 +4,7 @@ import config
 import json
 import math
 import os
-#import parser
+import parser
 #import distance
 #import elevation
 
@@ -25,7 +25,13 @@ def current_stations():
 @app.route("/ajax/possiblestations")
 def possible_stations():
 	the_app = model.Possible_Station()
-	ret = the_app.to_dict()
+	crowd_sourced_hs = the_app.to_dict()
+	# go through a loop and only add the ones that have key = c
+	ret = []
+	for i in crowd_sourced_hs:
+		if i["key"] == "c":
+			ret.append(i)
+
 	return json.dumps(ret)
 
 @app.route("/getelevation")
@@ -62,20 +68,36 @@ def get_elevation():
 	rise = calc_rise(d)
 	run = calc_run(rise)
 	percentage = calc_elevation_grade(rise)
-	upvoted = send_to_db(percentage)
+	upvoted = send_to_db_elevation(percentage)
 	return json.dumps(percentage)
 
 @app.route("/ajax/elevation")
 def toggle_elevation():
-	the_app = model.Crowd_Sourced()
-	elevation = the_app.get_elevation()
-	recalc = parser.create_lat_lng_list_from_db(elevation)
-	# urlredirect to the possible stations handler?
-	the_app1 = model.Possible_Station()
-	hotspots = the_app1.to_dict()
+	the_app = model.Possible_Station()
+	elevation = the_app.to_dict()
+	# create new kmeans-created hot_spots
+	# recalc = parser.create_lat_lng_list_from_db(elevation)
+	# hot_spots = parser.kmeans(recalc)
+	# converted_kmeans = parser.convert_kmeans_to_list(hot_spots)
+	# hot_spots = parser.create_file(converted_kmeans)
+	# # run a function to drop the hot_spots table and re-seed it
+	# # re-query the database for the updated hotspots
+	# the_app1 = model.Possible_Station()
+	# hotspots = the_app1.to_dict()
+	# print hotspots
 
-	return json.dumps(hotspots)
+	# return json.dumps(hotspots)
+	ret = []
+	for i in elevation:
+		if i["key"] == "e":
+			ret.append(i)
 
+	return json.dumps(ret)
+
+
+# def drop_and_recreate_hot_spots():
+# 	model.Possible_Station.drop(model.engine, checkfirst=True)
+# 	seed.load_possible_stations(session)
 
 
 # get the difference between the lowest and the highest
@@ -145,7 +167,7 @@ def calc_elevation_grade(dictionary):
 	return dictionary
 
 
-def send_to_db(dictionary):
+def send_to_db_elevation(dictionary):
 	for d in dictionary:
 		if dictionary[d]["eldiffpercent"] > 15:
 			# add 1 to the vote data in the db
@@ -154,12 +176,17 @@ def send_to_db(dictionary):
 			upvote = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
 			print upvote.votes
 			upvote.votes += 1
-			upvote.el_reason = "elevation"
+			upvote.el_reason = True
 			model.session.add(upvote)
 			print "%r now has a vote of: %r" % (id, upvote.votes)
 
 	model.session.commit()
 	print "All of the votes have been added to the db."
+
+
+
+
+
 
 #rank them from dissimilar to highly similar based on the difference
 #if similar, add additional vote(s)
@@ -180,4 +207,8 @@ def send_to_db(dictionary):
 
 
 if __name__ == "__main__":
-    app.run(port=int(os.environ.get("PORT")))
+    #port = int(os.environ.get('PORT', 5000))
+    #app.run(host='0.0.0.0', port=port)
+    app.run(debug=True)
+
+

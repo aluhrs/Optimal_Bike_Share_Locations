@@ -11,6 +11,7 @@ def get_location(points):
 	
 	for i in range(len(points)):
 			if len(locations_list) < 950:
+				if points[i].grocery_reason and points[i].transportation_reason and points[i].transportation_reason and points[i].food_reason and points[i].other_poi_reason
 				id = points[i].id
 				curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
 				latitude = points[i].latitude
@@ -22,38 +23,31 @@ def get_location(points):
 					for i in range(len(types)):
 						if types[i] == "grocery_or_supermarket":
 							print "For groceries: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
-							# curr.grocery_reason = types[i]
-							# curr.votes += 1
-							# model.session.add(curr)
-							# locations_list.append(types[i])
-						if types[i] == "bus_station" or "subway_station" or "train_station":
+							curr.grocery_reason = True
+							curr.votes += 1
+							model.session.add(curr)
+							locations_list.append(types[i])
+						if types[i] in ["bus_station", "subway_station", "train_station"]:
 							print "For transportation: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
-							# curr.transportation_reason = types[i]
-							# curr.votes += 1
-							# model.session.add(curr)
-							# locations_list.append(types[i])
+							curr.transportation_reason = True
+							curr.votes += 1
+							model.session.add(curr)
+							locations_list.append(types[i])
 						if types[i] == "food":
 							print "For food: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
-							# curr.food_reason = types[i]
-							# curr.votes += 1
-							# model.session.add(curr)
-							# locations_list.append(types[i])
-						if types[i] == "bar" or "home_goods_store" or "movie_theater" or "park" or "shopping_mall":
+							curr.food_reason = True
+							curr.votes += 1
+							model.session.add(curr)
+							locations_list.append(types[i])
+						if types[i] in ["home_goods_store", "movie_theater", "park", "shopping_mall"]:
 							print "For other: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
-							# curr.other_poi_reason = types[i]
-							# curr.votes += 1
-							# model.session.add(curr)
-							# locations_list.append(types[i])
-							
-				#poi = parse(data)
-				#curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
-				#curr.elevation = poi
-				#model.session.add(curr)
-				#locations_list.append(elevation)
+							curr.other_poi_reason = True
+							curr.votes += 1
+							model.session.add(curr)
+							locations_list.append(types[i])
 			
-	#model.session.commit()
+	model.session.commit()
 	print "The points of interest information have been added to the database"
-	#return elevations
 
 # use urllib2 to open the url
 def build_url(latitude, longitude):

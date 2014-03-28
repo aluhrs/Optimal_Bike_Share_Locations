@@ -58,9 +58,10 @@ function initialize() {
 
 }
 
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
-  placeMarker(possibleStationsList, null);
+// Removes the Markers from the map
+function clearMarkers(list) {
+  console.log("this should be displaying twice.");
+  placeMarker(list, null);
 }
 
 function placeMarker(list, theMap){
@@ -81,6 +82,7 @@ function placePossibleStations(image){
       dataType: "json"          
     }).done(function(hotspots){
       var lat, lng;
+
       for (var i=0; i<hotspots.length; i++) {
         lat = hotspots[i]["latitude"];
         lng = hotspots[i]["longitude"];
@@ -99,6 +101,8 @@ function placePossibleStations(image){
 var legend;
 var intro;
 
+var newPossibleStationsList = [];
+
 $(document).ready(function(){
   // cache the legend before the map wipes it from the DOM
   legend = document.getElementById("legend");
@@ -106,27 +110,29 @@ $(document).ready(function(){
 
   $("#elevation").click(function(){
     if($("#elevation").is(":checked")){
-      clearMarkers();
-      // $.ajax({
-      //   url: "/ajax/elevation",
-      //   dataType: "json"
-      // }).done(function(hotspots){
-      //   var lat, lng;
-      //   var image = 'http://www.placekitten.com/32/32'; 
-      //   for (var i=0; i<hotspots.length; i++){
-      //     lat = hotspots[i]["latitude"];
-      //     lng = hotspots[i]["longitude"];
-      //     marker = (new google.maps.Marker({
-      //       position: new google.maps.LatLng(lat,lng),
-      //       map: map,
-      //       title: "Possible Hot Spot",
-      //       icon: image
-      //     }));
-        //placeMarker(possibleStationsList, map); 
-      // }
-      //})
+      clearMarkers(possibleStationsList);
+      $.ajax({
+        url: "/ajax/elevation",
+        // data: {}
+        dataType: "json"
+      }).done(function(hotspots){
+        var lat, lng;
+        var image = 'http://www.placekitten.com/32/32'; 
+        for (var i=0; i<hotspots.length; i++){
+          lat = hotspots[i]["latitude"];
+          lng = hotspots[i]["longitude"];
+          newPossibleStationsList.push(new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            map: map,
+            title: "Possible Hot Spot",
+            icon: image
+          }));
+        placeMarker(newPossibleStationsList, map); 
+      }
+      })
     }
     else {
+      clearMarkers(newPossibleStationsList);
       placeMarker(possibleStationsList, map);
     }
   });

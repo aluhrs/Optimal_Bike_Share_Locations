@@ -31,7 +31,7 @@ def load_crowd_sourced_data(session):
 			votes = int(location["votes"])
 			name = location["name"]
 			crowd = model.Crowd_Sourced(latitude=latitude, longitude=longitude, votes=votes, 
-											name=name)
+											name=name, crowd_sourced_reason=True)
 			session.add(crowd)
 		session.commit()
 		print "The crowd sourced data has been added to the database."
@@ -63,7 +63,7 @@ def clean_data(data):
 
 		upper_right_corner = lat < 37.81 and lng > -122.52
 		lower_left_corner = lat > 37.735 and lng < -122.377
-		urc_cbs = lat < 37.800904 and lng < -122.406113
+		urc_cbs = lat < 37.794061 and lng < -122.408001
 		llc_cbs = lat > 37.774679 and lng < -122.388593
 		if upper_right_corner:
 			if lower_left_corner:
@@ -79,7 +79,7 @@ def main(session):
 	# pass
 	#load_current_stations(session)
 	load_crowd_sourced_data(session)
-	#load_possible_stations(session)
+	load_possible_stations(session)
 
 if __name__ == "__main__":
 	s = model.session

@@ -3,22 +3,18 @@ from datetime import datetime
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Integer, String, DateTime, Text, Numeric
+from sqlalchemy import Column, Integer, String, DateTime, Text, Numeric, Boolean
 
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
-# create a second thing for postgres
-# "sqlite://" instead of the config file
+
 engine = create_engine(config.DB_URI, echo=False)
 session = scoped_session(sessionmaker(bind=engine,
 									  autocommit = False,
 									  autoflush = False))
-# create a second thing for postgres
-# "postgres://" instead of the config file
+
 Base = declarative_base()
 Base.query = session.query_property()
-
-# then go through the classes and add the data to the postgre db?
 
 class Current_Station(Base):
 	__tablename__ = "current_stations"
@@ -53,11 +49,12 @@ class Crowd_Sourced(Base):
 	votes = Column(Integer, nullable=True)
 	name = Column(String(150), nullable=True)
 	elevation = Column(Numeric(11,7), nullable=True)
-	el_reason = Column(String(100), nullable=True)
-	#grocery_reason = Column(String(100), nullable=True)
-	#transportation_reason = Column(String(100), nullable=True)
-	#food_reason = Column(String(100), nullable=True)
-	#other_poi_reason = Column(String(100), nullable=True)
+	crowd_sourced_reason = Column(Boolean, nullable=True)
+	elevation_reason = Column(Boolean, nullable=True)
+	grocery_reason = Column(Boolean, nullable=True)
+	transportation_reason = Column(Boolean, nullable=True)
+	food_reason = Column(Boolean, nullable=True)
+	other_poi_reason = Column(Boolean, nullable=True)
 
 
 	def to_dict(self):
@@ -71,6 +68,7 @@ class Crowd_Sourced(Base):
 			d["longitude"] = float(s.longitude)
 			d["votes"] = int(s.votes)
 			d["elevation"] = float(s.elevation)
+			d["elevation_reason"] = s.elevation_reason
 			ret.append(d)
 
 		return ret
@@ -95,12 +93,12 @@ class Crowd_Sourced(Base):
 
 
 class Possible_Station(Base):
-	# TODO: reseed the database with __tablename__ = "possible_stations"
 	__tablename__ = "possible_stations"
 	id = Column(Integer, primary_key=True)
 	latitude = Column(Numeric(11, 8), nullable=False)
 	longitude = Column(Numeric(11, 8), nullable=False)
 	name = Column(String(100), nullable=True)
+	key = Column(String(100), nullable=True)
 
 	def to_dict(self):
 		# query the database
@@ -110,9 +108,11 @@ class Possible_Station(Base):
 			d = {}
 			d["latitude"] = float(s.latitude)
 			d["longitude"] = float(s.longitude)
+			d["key"] = s.key
 			ret.append(d)
 
 		return ret
+
 
 def create_tables():
     Base.metadata.create_all(engine)
