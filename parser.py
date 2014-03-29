@@ -69,7 +69,7 @@ def clean_data(sorted_latslngs):
 		lng = i[1]
 		upper_right_corner = lat < 37.81 and lng > -122.52
 		lower_left_corner = lat > 37.735 and lng < -122.377
-		urc_cbs = lat < 37.800904 and lng < -122.406113
+		urc_cbs = lat < 37.794061 and lng < -122.408001
 		llc_cbs = lat > 37.774679 and lng < -122.388593
 		if upper_right_corner:
 			if lower_left_corner:
@@ -79,12 +79,81 @@ def clean_data(sorted_latslngs):
 
 	return clean_lats_and_longs
 
-def create_lat_lng_list_from_db(db_data):
+
+def upvote_elevation_reason(db_data):
 	db_lats_and_longs = []
 	for data in db_data:
+		print data
 		lat = data["latitude"]
 		lng = data["longitude"]
 		num_of_appends = data["votes"]
+		# if data["crowd_sourced_reason"]:
+		# 	crowd_sourced_reason = data["crowd_sourced_reason"]
+		if data["elevation_reason"]:
+			elevation = data["elevation_reason"]
+			print num_of_appends
+			num_of_appends += 5
+			print num_of_appends
+
+		# if data["grocery_reason"]:
+		# 	grocery = data["grocery_reason"]
+		# if data["transportation_reason"]:
+		# 	transportation = data["transportation_reason"]
+		# if data["food_reason"]:
+		# 	food = data["food_reason"]
+		# if data["other_poi_reason"]:
+		# 	food = data["other_poi_reason"]
+
+		# update db and then get number of votes
+		
+
+		if num_of_appends > 0:
+			for x in range(num_of_appends):
+				db_lats_and_longs.append((lat,lng))
+		else:
+			db_lats_and_longs.append((lat,lng))
+
+
+	return db_lats_and_longs
+
+def upvote_grocery_reason(db_data):
+	db_lats_and_longs = []
+	for data in db_data:
+		print data
+		lat = data["latitude"]
+		lng = data["longitude"]
+		num_of_appends = data["votes"]
+		# if data["crowd_sourced_reason"]:
+		# 	crowd_sourced_reason = data["crowd_sourced_reason"]
+
+		# if data["elevation_reason"]:
+		# 	print num_of_appends
+		# 	num_of_appends += 5
+		# 	print num_of_appends
+
+		# if data["grocery_reason"]:
+		#	print num_of_appends
+		# 	num_of_appends += 5
+		# 	print num_of_appends
+
+
+		# if data["transportation_reason"]:
+		#	print num_of_appends
+		# 	num_of_appends += 5
+		# 	print num_of_appends
+
+
+		# if data["food_reason"]:
+		#	print num_of_appends
+		# 	num_of_appends += 5
+		# 	print num_of_appends
+
+
+		# if data["other_poi_reason"]:
+		#	print num_of_appends
+		# 	num_of_appends += 5
+		# 	print num_of_appends
+		
 		if num_of_appends > 0:
 			for x in range(num_of_appends):
 				db_lats_and_longs.append((lat,lng))
@@ -119,7 +188,7 @@ def kmeans(sorted_data):
 	num = numpy.array(sorted_data)
 	# use the kmeans2 method on the data and specify the
 	# number of hot spots
-	hot_spots_data = kmeans2(num, 30)
+	hot_spots_data = kmeans2(num, 25)
 
 	return hot_spots_data
 
@@ -143,32 +212,62 @@ def create_file(hotspots):
 
 	print "Your file hot_spots.txt has been created."
 
+def update_db_elevation(hotspots):
+	for i in hotspots:
+		lat = i[0]
+		lng = i[1]
+		key = 'e'
+		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key)
+		model.session.add(new_point)
+		print "A point with lat: %r and lng: %r and key: %r has been added to the database." % (lat, lng, key)
 
-if len(argv) == 2:
-	script, filename = argv
-	# open the file
-	f = open(filename)
-	# read the file
-	data_string = f.read()
-	# close the file
-	f.close
+	model.session.commit()
+	print "The points have been added to the Possible Stations table."
 
-	# convert the data from json to python
-	# bike_locations is a list of dictionaries
-	bike_locations = json.loads(data_string)
-	lats_and_longs = position_and_votes(bike_locations)
-	sorted_by_lats = sort_lats(lats_and_longs)
-	cleaned_data = clean_data(sorted_by_lats)
-	hot_spots = kmeans(cleaned_data)
-	converted_kmeans = convert_kmeans_to_list(hot_spots)
-	create_file(converted_kmeans)
-else:
-	the_app = model.Crowd_Sourced()
-	all_data = the_app.to_dict()
-	db_lat_lng = create_lat_lng_list_from_db(all_data)
-	hot_spots = kmeans(db_lat_lng)
-	converted_kmeans = convert_kmeans_to_list(hot_spots)
-	create_file(converted_kmeans)
+def update_db_grocery(hotspots):
+	for i in hotspots:
+		lat = i[0]
+		lng = i[1]
+		key = 'g'
+		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key)
+		model.session.add(new_point)
+		print "A point with lat: %r and lng: %r and key: %r has been added to the database." % (lat, lng, key)
+
+	model.session.commit()
+	print "The points have been added to the Possible Stations table."
+
+def get_key():
+	pass
+
+def main():
+	if len(argv) == 2:
+		script, filename = argv
+		# open the file
+		f = open(filename)
+		# read the file
+		data_string = f.read()
+		# close the file
+		f.close
+
+		# convert the data from json to python
+		# bike_locations is a list of dictionaries
+		bike_locations = json.loads(data_string)
+		lats_and_longs = position_and_votes(bike_locations)
+		sorted_by_lats = sort_lats(lats_and_longs)
+		cleaned_data = clean_data(sorted_by_lats)
+		hot_spots = kmeans(cleaned_data)
+		converted_kmeans = convert_kmeans_to_list(hot_spots)
+		create_file(converted_kmeans)
+	else:
+		the_app = model.Crowd_Sourced()
+		all_data = the_app.to_dict()
+		#db_lat_lng = upvote_elevation_reason(all_data)
+		db_lat_lng = upvote_grocery_reason(all_data)
+		hot_spots = kmeans(db_lat_lng)
+		converted_kmeans = convert_kmeans_to_list(hot_spots)
+		#update_db_elevation(converted_kmeans)
+		update_db_grocery(converted_kmeans)
+		#create_file(converted_kmeans)
 	
 
 
@@ -191,6 +290,6 @@ else:
 
 
 
-#if __name__ == "__main__":
-
+if __name__ == "__main__":
+	main()
    

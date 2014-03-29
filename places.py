@@ -3,7 +3,7 @@ import urllib2
 import json
 
 #test with limit 1
-points = model.session.query(model.Crowd_Sourced).limit(1).all()
+points = model.session.query(model.Crowd_Sourced).all()
 
 # encode the url
 def get_location(points):
@@ -11,7 +11,7 @@ def get_location(points):
 	
 	for i in range(len(points)):
 			if len(locations_list) < 950:
-				if points[i].grocery_reason and points[i].transportation_reason and points[i].transportation_reason and points[i].food_reason and points[i].other_poi_reason
+				#if points[i].grocery_reason and points[i].transportation_reason and points[i].transportation_reason and points[i].food_reason and points[i].other_poi_reason
 				id = points[i].id
 				curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
 				latitude = points[i].latitude
@@ -24,25 +24,25 @@ def get_location(points):
 						if types[i] == "grocery_or_supermarket":
 							print "For groceries: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
 							curr.grocery_reason = True
-							curr.votes += 1
+							#curr.votes += 5
 							model.session.add(curr)
 							locations_list.append(types[i])
 						if types[i] in ["bus_station", "subway_station", "train_station"]:
 							print "For transportation: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
 							curr.transportation_reason = True
-							curr.votes += 1
+							#curr.votes += 5
 							model.session.add(curr)
 							locations_list.append(types[i])
 						if types[i] == "food":
 							print "For food: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
 							curr.food_reason = True
-							curr.votes += 1
+							#curr.votes += 5
 							model.session.add(curr)
 							locations_list.append(types[i])
 						if types[i] in ["home_goods_store", "movie_theater", "park", "shopping_mall"]:
 							print "For other: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
 							curr.other_poi_reason = True
-							curr.votes += 1
+							#curr.votes += 3
 							model.session.add(curr)
 							locations_list.append(types[i])
 			
@@ -61,16 +61,16 @@ def get_data(url):
 	json_data = json.loads(response.read())
 	return json_data
 
-def parse(json_data):
-	# for loop to go through length of the list of types
+# def parse(json_data):
+# 	# for loop to go through length of the list of types
 
-	for e in range(len(json_data["results"])):
-		types = json_data["results"][e]["types"]
-		for i in range(len(types)):
-			if types[i] == "neighborhood":
-				print types[i]
+# 	for e in range(len(json_data["results"])):
+# 		types = json_data["results"][e]["types"]
+# 		for i in range(len(types)):
+# 			if types[i] == "neighborhood":
+# 				print types[i]
 
-	return json_data["results"][0]["types"]
+# 	return json_data["results"][0]["types"]
 
 """
  {

@@ -69,6 +69,10 @@ class Crowd_Sourced(Base):
 			d["votes"] = int(s.votes)
 			d["elevation"] = float(s.elevation)
 			d["elevation_reason"] = s.elevation_reason
+			d["grocery_reason"] = s.grocery_reason
+			d["transportation_reason"] = s.transportation_reason
+			d["food_reason"] = s.food_reason
+			d["other_poi_reason"] = s.other_poi_reason
 			ret.append(d)
 
 		return ret

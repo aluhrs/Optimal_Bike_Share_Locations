@@ -60,7 +60,6 @@ function initialize() {
 
 // Removes the Markers from the map
 function clearMarkers(list) {
-  console.log("this should be displaying twice.");
   placeMarker(list, null);
 }
 
@@ -112,8 +111,9 @@ $(document).ready(function(){
     if($("#elevation").is(":checked")){
       clearMarkers(possibleStationsList);
       $.ajax({
-        url: "/ajax/elevation",
-        // data: {}
+        url: "/ajax/legend",
+        // data: $("something to identify the checkbox").serialize(),
+        // data needs to be a key value pair
         dataType: "json"
       }).done(function(hotspots){
         var lat, lng;
@@ -136,6 +136,46 @@ $(document).ready(function(){
       placeMarker(possibleStationsList, map);
     }
   });
+
+// $(document).ready(function(){
+//   // cache the legend before the map wipes it from the DOM
+//   legend = document.getElementById("legend");
+//   intro = document.getElementById("intro");
+
+//   #var checkboxes = document.getElementsByClassName("checkboxes");
+//   $(".checkboxes input").click(function(){
+//     if(".checkboxes input:checked"){
+      //-> may need .length?
+      //-> outputs a list; also need the values
+      //-> loop through the list and send the list as to router.py
+      //-> more info: http://api.jquery.com/checked-selector/
+//       clearMarkers(possibleStationsList);
+//       $.ajax({
+//         url: "/ajax/elevation",
+//         // data: $("something to identify the checkbox").serialize(),
+//         // data needs to be a key value pair
+//         dataType: "json"
+//       }).done(function(hotspots){
+//         var lat, lng;
+//         var image = 'http://www.placekitten.com/32/32'; 
+//         for (var i=0; i<hotspots.length; i++){
+//           lat = hotspots[i]["latitude"];
+//           lng = hotspots[i]["longitude"];
+//           newPossibleStationsList.push(new google.maps.Marker({
+//             position: new google.maps.LatLng(lat,lng),
+//             map: map,
+//             title: "Possible Hot Spot",
+//             icon: image
+//           }));
+//         placeMarker(newPossibleStationsList, map); 
+//       }
+//       })
+//     }
+//     else {
+//       clearMarkers(newPossibleStationsList);
+//       placeMarker(possibleStationsList, map);
+//     }
+//   });
   
 
   // load the map
