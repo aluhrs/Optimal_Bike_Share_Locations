@@ -22,7 +22,7 @@ def load_current_stations(session):
 
 # load all of the votes within San Francisco into the db
 def load_crowd_sourced_data(session):
-	with open("./static/bikesharemetadata.txt") as f:
+	with open("./static/bikesharemetadata1.txt") as f:
 		crowd_sourced = json.loads(f.read())
 		cleaned_data = clean_data(crowd_sourced)
 		for location in cleaned_data:
@@ -42,8 +42,9 @@ def load_possible_stations(session):
 		for spot in hot_spots:
 			latitude = float(spot[0])
 			longitude = float(spot[1])
+			key = 'c'
 			# add a name at some point
-			hotspot = model.Possible_Station(latitude=latitude, longitude=longitude)
+			hotspot = model.Possible_Station(latitude=latitude, longitude=longitude, key=key)
 			session.add(hotspot)
 		session.commit()
 		print "The Possible Stations have been added to the database."
@@ -67,19 +68,20 @@ def clean_data(data):
 		llc_cbs = lat > 37.774679 and lng < -122.388593
 		if upper_right_corner:
 			if lower_left_corner:
-				if urc_cbs:
-					if llc_cbs:
-						clean_data.append({"latitude": lat, "longitude": lng, "votes": vote,
-												"name": names})
+				# if urc_cbs:
+				# 	if llc_cbs:
+				clean_data.append({"latitude": lat, "longitude": lng, "votes": vote,
+										"name": names})
 
+	#print len(clean_data)
 	return clean_data
 
 
 def main(session):
-	# pass
+	pass
 	#load_current_stations(session)
 	load_crowd_sourced_data(session)
-	load_possible_stations(session)
+	#load_possible_stations(session)
 
 if __name__ == "__main__":
 	s = model.session

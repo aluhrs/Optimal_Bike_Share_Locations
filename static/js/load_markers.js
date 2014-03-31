@@ -99,59 +99,20 @@ function placePossibleStations(image){
 
 var legend;
 var intro;
+var logo;
 
 var newPossibleStationsList = [];
-
-$(document).ready(function(){
-  // cache the legend before the map wipes it from the DOM
-  legend = document.getElementById("legend");
-  intro = document.getElementById("intro");
-
-  $("#elevation").click(function(){
-    if($("#elevation").is(":checked")){
-      clearMarkers(possibleStationsList);
-      $.ajax({
-        url: "/ajax/legend",
-        // data: $("something to identify the checkbox").serialize(),
-        // data needs to be a key value pair
-        dataType: "json"
-      }).done(function(hotspots){
-        var lat, lng;
-        var image = 'http://www.placekitten.com/32/32'; 
-        for (var i=0; i<hotspots.length; i++){
-          lat = hotspots[i]["latitude"];
-          lng = hotspots[i]["longitude"];
-          newPossibleStationsList.push(new google.maps.Marker({
-            position: new google.maps.LatLng(lat,lng),
-            map: map,
-            title: "Possible Hot Spot",
-            icon: image
-          }));
-        placeMarker(newPossibleStationsList, map); 
-      }
-      })
-    }
-    else {
-      clearMarkers(newPossibleStationsList);
-      placeMarker(possibleStationsList, map);
-    }
-  });
 
 // $(document).ready(function(){
 //   // cache the legend before the map wipes it from the DOM
 //   legend = document.getElementById("legend");
 //   intro = document.getElementById("intro");
 
-//   #var checkboxes = document.getElementsByClassName("checkboxes");
-//   $(".checkboxes input").click(function(){
-//     if(".checkboxes input:checked"){
-      //-> may need .length?
-      //-> outputs a list; also need the values
-      //-> loop through the list and send the list as to router.py
-      //-> more info: http://api.jquery.com/checked-selector/
+//   $("#elevation").click(function(){
+//     if($("#elevation").is(":checked")){
 //       clearMarkers(possibleStationsList);
 //       $.ajax({
-//         url: "/ajax/elevation",
+//         url: "/ajax/legend",
 //         // data: $("something to identify the checkbox").serialize(),
 //         // data needs to be a key value pair
 //         dataType: "json"
@@ -176,6 +137,55 @@ $(document).ready(function(){
 //       placeMarker(possibleStationsList, map);
 //     }
 //   });
+
+$(document).ready(function(){
+  // cache the legend before the map wipes it from the DOM
+  legend = document.getElementById("legend");
+  intro = document.getElementById("intro");
+  //logo = document.getElementById("logo");
+  //attempted to do with a form. 
+  //var formSubmitButton = $("#form_submit");
+  //formSubmitButton.on("click", function(event){
+  $(".checkboxes input").click(function(){
+    if($(".checkboxes input:checked").length > 0){
+      var inputList = []
+      for (var i=0; i<$(".checkboxes input:checked").length; i++){
+        inputList.push($(".checkboxes input:checked")[i]["value"]);
+      }
+      console.log("this is the console.log: " + inputList);
+      // -> may need .length?
+      // -> outputs a list; also need the values
+      // -> loop through the list and send the list as to router.py
+      // -> more info: http://api.jquery.com/checked-selector/
+      clearMarkers(possibleStationsList);
+      $.ajax({
+        url: "/ajax/legend",
+        type: "GET",
+        data: {"li": inputList},
+        dataType: "json",
+        contentType: "application/json"
+      }).done(function(hotspots){
+        var lat, lng;
+        var image = 'http://www.placekitten.com/32/32'; 
+        for (var i=0; i<hotspots.length; i++){
+          lat = hotspots[i]["latitude"];
+          lng = hotspots[i]["longitude"];
+          id = hotspots[i]["id"];
+          newPossibleStationsList.push(new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            map: map,
+            title: "id",
+            icon: image
+          }));
+        placeMarker(newPossibleStationsList, map); 
+      }
+      })
+    }
+    else {
+      clearMarkers(newPossibleStationsList);
+      placeMarker(possibleStationsList, map);
+    }
+  });
   
 
   // load the map

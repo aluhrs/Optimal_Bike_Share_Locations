@@ -20,6 +20,11 @@
   </head>
   <body>
     <div id="map-canvas"/>
+<!--     <div id="header">
+      <div id="logo">
+        <img src="/images/bikesharelogo.jpeg" alt="Bay Area Bike Share">  
+      </div>
+    </div> -->
     <div id="intro">
       <h3>Find Optimal Bike Share Locations!</h3>
       <p>The cats show the optimal bike share locations based on a crowdsourcing website.
@@ -29,20 +34,24 @@
     <div id="legend">
       <h3>Legend</h3>
       <div class="checkboxes">
-        <input id="elevation" name="elevation1" value="elevation2" type="checkbox"></input>
+      <form id="checkboxes" method="POST">
+        <input id="elevation" name="elevation1" value="e" type="checkbox"></input>
         <label id="elevation_label">Elevation</label>
         <p>
-        <input id="grocery" name="grocery1" value="grocery2" type="checkbox"></input>
+        <input id="grocery" name="grocery1" value="g" type="checkbox"></input>
         <label id="grocery_label">Grocery Stores</label>
         <p>
-        <input id="transportation" name="transportation1" value="transportation2" type="checkbox"></input>
+        <input id="transportation" name="transportation1" value="t" type="checkbox"></input>
         <label id="transportation_label">Transportation</label>
         <p>
-        <input id="food" name="food1" value="food2" type="checkbox"></input>
+        <input id="food" name="food1" value="f" type="checkbox"></input>
         <label id="food_label">Restuarants/Cafes</label>
         <p>
-        <input id="poi" name="poi1" value="poi2" type="checkbox"></input>
+        <input id="poi" name="poi1" value="o" type="checkbox"></input>
         <label id="poi_label">Points Of Interest</label>
+        <p>
+        <!--<input type="submit" id="form_submit" value="Get Opitmal Locations"></input>-->
+      </form>
       </div>
     </div>
     </div>

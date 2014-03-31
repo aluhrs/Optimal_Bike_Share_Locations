@@ -169,8 +169,8 @@ def send_to_db_elevation(dictionary):
 			print "%r has added elevation as a reason" % id
 
 	model.session.commit()
-	print "All of the votes have been added to the db."
+	print "All of the points have been added to the db as elevation_reason."
 
 if __name__ == "__main__":
-	url = get_location(points)
+	#url = get_location(points)
 	elevation = update_elevation()

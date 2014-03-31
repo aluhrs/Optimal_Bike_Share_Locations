@@ -71,11 +71,13 @@ def clean_data(sorted_latslngs):
 		lower_left_corner = lat > 37.735 and lng < -122.377
 		urc_cbs = lat < 37.794061 and lng < -122.408001
 		llc_cbs = lat > 37.774679 and lng < -122.388593
+		#bad 37.787619, -122.392711
+		#good 37.779411, -122.464379
 		if upper_right_corner:
 			if lower_left_corner:
-				if urc_cbs:
-					if llc_cbs:
-						clean_lats_and_longs.append((lat, lng))
+				# if urc_cbs:
+				# 	if llc_cbs:
+				clean_lats_and_longs.append((lat, lng))
 
 	return clean_lats_and_longs
 
@@ -116,20 +118,19 @@ def upvote_elevation_reason(db_data):
 
 	return db_lats_and_longs
 
-def upvote_grocery_reason(db_data):
+def upvote_elevation_reason(db_data):
 	db_lats_and_longs = []
 	for data in db_data:
-		print data
 		lat = data["latitude"]
 		lng = data["longitude"]
 		num_of_appends = data["votes"]
 		# if data["crowd_sourced_reason"]:
 		# 	crowd_sourced_reason = data["crowd_sourced_reason"]
 
-		# if data["elevation_reason"]:
-		# 	print num_of_appends
-		# 	num_of_appends += 5
-		# 	print num_of_appends
+		if data["elevation_reason"]:
+			print num_of_appends
+			num_of_appends += 5
+			print num_of_appends
 
 		# if data["grocery_reason"]:
 		#	print num_of_appends
@@ -188,12 +189,11 @@ def kmeans(sorted_data):
 	num = numpy.array(sorted_data)
 	# use the kmeans2 method on the data and specify the
 	# number of hot spots
-	hot_spots_data = kmeans2(num, 25)
+	hot_spots_data = kmeans2(num, 30)
 
 	return hot_spots_data
 
 def convert_kmeans_to_list(kmeans_tuple):
-	#squeezed = numpy.squeeze(kmeans_array).shape
 	kmeans_array = kmeans_tuple[0]
 
 	ret = []
@@ -261,12 +261,12 @@ def main():
 	else:
 		the_app = model.Crowd_Sourced()
 		all_data = the_app.to_dict()
-		#db_lat_lng = upvote_elevation_reason(all_data)
-		db_lat_lng = upvote_grocery_reason(all_data)
+		db_lat_lng = upvote_elevation_reason(all_data)
+		#db_lat_lng = upvote_grocery_reason(all_data)
 		hot_spots = kmeans(db_lat_lng)
 		converted_kmeans = convert_kmeans_to_list(hot_spots)
-		#update_db_elevation(converted_kmeans)
-		update_db_grocery(converted_kmeans)
+		update_db_elevation(converted_kmeans)
+		#update_db_grocery(converted_kmeans)
 		#create_file(converted_kmeans)
 	
 

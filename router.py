@@ -35,9 +35,37 @@ def possible_stations():
 	return json.dumps(ret)
 
 @app.route("/ajax/legend")
-def toggle_elevation():
+def toggle_checkboxes():
 	the_app = model.Possible_Station()
-	elevation = the_app.to_dict()
+	db_data = the_app.to_dict()
+
+	list_args = request.args.getlist("li[]")
+	s_list_args = sorted(list_args)
+
+	# print "this should be printing"
+	# f = request.POST
+	# print len(f)
+	# f.getlist("il")
+
+	ret = []
+
+	for key in s_list_args:
+		for i in db_data:
+			if i["key"] == key:
+				ret.append(i)
+
+
+	return json.dumps(ret)
+
+		# for value in f.getlist(key):
+		# 	print "%r: %r" % (key, value)
+
+	# print "this should also be printing"
+	# print request.form["il"]
+	# print json_data
+	# data = json.loads(json_data)
+	# print data
+	#print type(data)
 	# create new kmeans-created hot_spots
 	# recalc = parser.create_lat_lng_list_from_db(elevation)
 	# hot_spots = parser.kmeans(recalc)
@@ -50,16 +78,16 @@ def toggle_elevation():
 	# print hotspots
 
 	# return json.dumps(hotspots)
-	ret = []
-	for i in elevation:
-		if i["key"] == "e":
-			ret.append(i)
-		#if i["key"] == "g":
-			#ret.append(i)
-		#if i["key"] == "eg":
-			#ret.append(i)
+	# ret = []
+	# for i in db_data:
+	# 	if i["key"] == "e":
+	# 		ret.append(i)
+	# 	#if i["key"] == "g":
+	# 		#ret.append(i)
+	# 	#if i["key"] == "eg":
+	# 		#ret.append(i)
 
-	return json.dumps(ret)
+	# return json.dumps(ret)
 
 
 

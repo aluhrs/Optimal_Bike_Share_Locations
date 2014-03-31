@@ -32,6 +32,7 @@ class Current_Station(Base):
 		ret = []
 		for s in stations:
 			d = {}
+			d["id"] = int(s.id)
 			d["latitude"] = float(s.latitude)
 			d["longitude"] = float(s.longitude)
 			d["city"] = s.city
@@ -110,6 +111,7 @@ class Possible_Station(Base):
 		ret = []
 		for s in stations:
 			d = {}
+			d["id"] = int(s.id)
 			d["latitude"] = float(s.latitude)
 			d["longitude"] = float(s.longitude)
 			d["key"] = s.key
