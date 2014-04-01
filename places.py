@@ -1,3 +1,5 @@
+"""This file gets places data from the Google Maps Places API."""
+
 import model
 import urllib2
 import json
@@ -10,41 +12,45 @@ def get_location(points):
 	locations_list = []
 	
 	for i in range(len(points)):
-			if len(locations_list) < 950:
-				#if points[i].grocery_reason and points[i].transportation_reason and points[i].transportation_reason and points[i].food_reason and points[i].other_poi_reason
-				id = points[i].id
-				curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
-				latitude = points[i].latitude
-				longitude = points[i].longitude				
-				url = build_url(latitude, longitude)
-				json_data = get_data(url)
-				for e in range(len(json_data["results"])):
-					types = json_data["results"][e]["types"]
-					for i in range(len(types)):
-						if types[i] == "grocery_or_supermarket":
-							print "For groceries: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
-							curr.grocery_reason = True
-							#curr.votes += 5
-							model.session.add(curr)
-							locations_list.append(types[i])
-						if types[i] in ["bus_station", "subway_station", "train_station"]:
-							print "For transportation: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
-							curr.transportation_reason = True
-							#curr.votes += 5
-							model.session.add(curr)
-							locations_list.append(types[i])
-						if types[i] == "food":
-							print "For food: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
-							curr.food_reason = True
-							#curr.votes += 5
-							model.session.add(curr)
-							locations_list.append(types[i])
-						if types[i] in ["home_goods_store", "movie_theater", "park", "shopping_mall"]:
-							print "For other: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (types, i, types[i])
-							curr.other_poi_reason = True
-							#curr.votes += 3
-							model.session.add(curr)
-							locations_list.append(types[i])
+			if len(locations_list) < 3000:
+				if points[i].grocery_reason == None and points[i].transportation_reason == None and points[i].transportation_reason == None and points[i].food_reason == None and points[i].other_poi_reason == None:
+					id = points[i].id
+					#print id
+					curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
+					latitude = points[i].latitude
+					longitude = points[i].longitude				
+					url = build_url(latitude, longitude)
+					json_data = get_data(url)
+					# print json_data
+					for e in range(len(json_data["results"])):
+						types = json_data["results"][e]["types"]
+						# types_len = len(types)
+						# print types_len
+						for i in range(len(types)):
+							# if i == types_len:
+							if types[i] == "grocery_or_supermarket":
+								#print "For %r: For groceries: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (id, types, i, types[i])
+								curr.grocery_reason = True
+								model.session.add(curr)
+								locations_list.append(id)
+							if types[i] in ["bus_station", "subway_station", "train_station"]:
+								#print "For %r: For transportation: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (id, types, i, types[i])
+								curr.transportation_reason = True
+								model.session.add(curr)
+								locations_list.append(id)
+							if types[i] == "food":
+								#print "For %r: For food: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (id, types, i, types[i])
+								curr.food_reason = True
+								model.session.add(curr)
+								locations_list.append(id)
+							if types[i] in ["home_goods_store", "movie_theater", "park", "shopping_mall"]:
+								#print "For %r: For other: These are the types: %r. This is the number in the list: %r. This is what I am adding: %r" % (id, types, i, types[i])
+								curr.other_poi_reason = True
+								model.session.add(curr)
+								locations_list.append(id)
+					
+	print locations_list
+	print len(locations_list)
 			
 	model.session.commit()
 	print "The points of interest information have been added to the database"

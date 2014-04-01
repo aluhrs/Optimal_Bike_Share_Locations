@@ -1,16 +1,3 @@
-from sys import argv
-import json
-from operator import itemgetter, attrgetter
-import numpy
-from scipy.cluster.vq import *
-import model
-
-# put this in a function so that it can do this
-# but otherise pull from the db
-# allow the command line to take in arguments
-
-
-
 """
 bike_locations[0] is a dictionary
 bike_locations[0]["location"] is a dictionaries
@@ -31,7 +18,30 @@ u'submissions': [{u'url': u'http://10.25.181.61:81/api/v1/sfbike/datasets/sfbike
 u'location_type': u'bikesite', 
 u'attachments': []}
 """
+"""
+#####################
+K-Means Clustering:
 
+Find an optimal location (hot spot) based on clustering the data into n number of clusters
+
+Example Output: 
+the first part of the array is the hotspots
+the second part of the array is the grouping each spot is in
+(array([[  37.8771551 , -122.17164591],
+       [  45.11379599,  -35.08469081],
+       [  47.25426942, -116.5809617 ],
+       [  37.37687755, -122.01158114],
+       [  37.76956281, -122.43318015]]), array([4, 3, 3, ..., 2, 2, 1]))
+#####################
+
+"""
+
+from sys import argv
+import json
+from operator import itemgetter, attrgetter
+import numpy
+from scipy.cluster.vq import *
+import model
 
 
 # loop through the list of dictionaries to find all of the lats/longs and votes for each location
@@ -82,111 +92,77 @@ def clean_data(sorted_latslngs):
 	return clean_lats_and_longs
 
 
-def upvote_elevation_reason(db_data):
+def upvote(db_data):
 	db_lats_and_longs = []
-	for data in db_data:
-		print data
-		lat = data["latitude"]
-		lng = data["longitude"]
-		num_of_appends = data["votes"]
-		# if data["crowd_sourced_reason"]:
-		# 	crowd_sourced_reason = data["crowd_sourced_reason"]
-		if data["elevation_reason"]:
-			elevation = data["elevation_reason"]
-			print num_of_appends
-			num_of_appends += 5
-			print num_of_appends
-
-		# if data["grocery_reason"]:
-		# 	grocery = data["grocery_reason"]
-		# if data["transportation_reason"]:
-		# 	transportation = data["transportation_reason"]
-		# if data["food_reason"]:
-		# 	food = data["food_reason"]
-		# if data["other_poi_reason"]:
-		# 	food = data["other_poi_reason"]
-
-		# update db and then get number of votes
-		
-
-		if num_of_appends > 0:
-			for x in range(num_of_appends):
-				db_lats_and_longs.append((lat,lng))
-		else:
-			db_lats_and_longs.append((lat,lng))
-
-
-	return db_lats_and_longs
-
-def upvote_elevation_reason(db_data):
-	db_lats_and_longs = []
+	#print db_data
 	for data in db_data:
 		lat = data["latitude"]
 		lng = data["longitude"]
 		num_of_appends = data["votes"]
+
 		# if data["crowd_sourced_reason"]:
 		# 	crowd_sourced_reason = data["crowd_sourced_reason"]
 
-		if data["elevation_reason"]:
-			print num_of_appends
-			num_of_appends += 5
-			print num_of_appends
+		# if data["elevation_reason"]:
+		# 	#print "elevation: %r" % num_of_appends
+		# 	num_of_appends += 3
+		# 	#print "elevation: %r" % num_of_appends
+
+		if data["food_reason"]:
+			#print num_of_appends
+			num_of_appends += 3
+			#print num_of_appends
 
 		# if data["grocery_reason"]:
-		#	print num_of_appends
+		# 	#print "grocery: %r" % num_of_appends
 		# 	num_of_appends += 5
-		# 	print num_of_appends
-
-
-		# if data["transportation_reason"]:
-		#	print num_of_appends
-		# 	num_of_appends += 5
-		# 	print num_of_appends
-
-
-		# if data["food_reason"]:
-		#	print num_of_appends
-		# 	num_of_appends += 5
-		# 	print num_of_appends
-
+		# 	#print "grocery: %r" % num_of_appends
 
 		# if data["other_poi_reason"]:
-		#	print num_of_appends
+		# 	#print num_of_appends
 		# 	num_of_appends += 5
-		# 	print num_of_appends
+		# 	#print num_of_appends
+
+		# if data["transportation_reason"]:
+		# 	#print num_of_appends
+		# 	num_of_appends += 5
+		# 	#print num_of_appends
+
 		
 		if num_of_appends > 0:
+			#print data
 			for x in range(num_of_appends):
 				db_lats_and_longs.append((lat,lng))
+				#print db_lats_and_longs
 		else:
 			db_lats_and_longs.append((lat,lng))
 
+		#print db_lats_and_longs
 
-	return db_lats_and_longs
+	hot_spots = kmeans(db_lats_and_longs)
+	converted_kmeans = convert_kmeans_to_list(hot_spots)
 
-"""
-#####################
-K-Means Clustering:
+	for i in converted_kmeans:
+		lat = i[0]
+		lng = i[1]
+		key = "eo"
+		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key)
+		model.session.add(new_point)
+		print "A point with lat: %r and lng: %r and key: %r has been added to the database." % (lat, lng, key)
 
-Find an optimal location (hot spot) based on clustering the data into n number of clusters
+	model.session.commit()
+	print "The points have been added to the Possible Stations table."
+	# return db_lats_and_longs
 
-Example Output: 
-the first part of the array is the hotspots
-the second part of the array is the grouping each spot is in
-(array([[  37.8771551 , -122.17164591],
-       [  45.11379599,  -35.08469081],
-       [  47.25426942, -116.5809617 ],
-       [  37.37687755, -122.01158114],
-       [  37.76956281, -122.43318015]]), array([4, 3, 3, ..., 2, 2, 1]))
-#####################
 
-"""
 
-def kmeans(sorted_data):
+def kmeans(data):
 	# put the sorted lats and longs into a useable format
 	# (numpy array matrix)
 	# for the k-means clustering algorithm
-	num = numpy.array(sorted_data)
+	#print data
+	num = numpy.array(data)
+	print num
 	# use the kmeans2 method on the data and specify the
 	# number of hot spots
 	hot_spots_data = kmeans2(num, 30)
@@ -205,6 +181,19 @@ def convert_kmeans_to_list(kmeans_tuple):
 
 	return ret
 
+
+def update_db_elevation(hotspots, k):
+	for i in hotspots:
+		lat = i[0]
+		lng = i[1]
+		key = k
+		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key)
+		model.session.add(new_point)
+		print "A point with lat: %r and lng: %r and key: %r has been added to the database." % (lat, lng, key)
+
+	model.session.commit()
+	print "The points have been added to the Possible Stations table."
+
 def create_file(hotspots):
 	new_file = open("./static/hot_spots.txt", 'w')
 	new_file.write(json.dumps(hotspots))
@@ -212,45 +201,13 @@ def create_file(hotspots):
 
 	print "Your file hot_spots.txt has been created."
 
-def update_db_elevation(hotspots):
-	for i in hotspots:
-		lat = i[0]
-		lng = i[1]
-		key = 'e'
-		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key)
-		model.session.add(new_point)
-		print "A point with lat: %r and lng: %r and key: %r has been added to the database." % (lat, lng, key)
-
-	model.session.commit()
-	print "The points have been added to the Possible Stations table."
-
-def update_db_grocery(hotspots):
-	for i in hotspots:
-		lat = i[0]
-		lng = i[1]
-		key = 'g'
-		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key)
-		model.session.add(new_point)
-		print "A point with lat: %r and lng: %r and key: %r has been added to the database." % (lat, lng, key)
-
-	model.session.commit()
-	print "The points have been added to the Possible Stations table."
-
-def get_key():
-	pass
-
 def main():
 	if len(argv) == 2:
 		script, filename = argv
-		# open the file
 		f = open(filename)
-		# read the file
 		data_string = f.read()
-		# close the file
 		f.close
 
-		# convert the data from json to python
-		# bike_locations is a list of dictionaries
 		bike_locations = json.loads(data_string)
 		lats_and_longs = position_and_votes(bike_locations)
 		sorted_by_lats = sort_lats(lats_and_longs)
@@ -261,11 +218,11 @@ def main():
 	else:
 		the_app = model.Crowd_Sourced()
 		all_data = the_app.to_dict()
-		db_lat_lng = upvote_elevation_reason(all_data)
-		#db_lat_lng = upvote_grocery_reason(all_data)
-		hot_spots = kmeans(db_lat_lng)
-		converted_kmeans = convert_kmeans_to_list(hot_spots)
-		update_db_elevation(converted_kmeans)
+		#db_lat_lng = upvote_elevation_reason(all_data)
+		db_lat_lng = upvote(all_data)
+		# hot_spots = kmeans(db_lat_lng)
+		# converted_kmeans = convert_kmeans_to_list(hot_spots)
+		#update_db_grocery(converted_kmeans)
 		#update_db_grocery(converted_kmeans)
 		#create_file(converted_kmeans)
 	
