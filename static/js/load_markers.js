@@ -20,14 +20,11 @@ function initialize() {
   var bikeLayer = new google.maps.BicyclingLayer();
   bikeLayer.setMap(map);
 
-
-  // jquery and ajax to loop through the list of stations
-  // and place the lat/longs on the map
   // var image = '/static/images/bikesharelogo.jpeg';
-  var image = 'http://www.placekitten.com/32/32'; 
+  // var image = 'http://www.placekitten.com/32/32'; 
+  var image = '/static/images/rsz_baybike.png'
+  var cs_image = '/static/images/icon.png'
 
-  // wrap this whole thing in a function similar
-  // to how I did place the hot spots
   var currStationList = []
   $.ajax({
     url: "/ajax/currentstations",
@@ -42,8 +39,8 @@ function initialize() {
         marker = new google.maps.Marker({
           position: new google.maps.LatLng(lat,lng),
           map: map,
-          title: stations[i]["stationName"]
-            //icon: image
+          title: stations[i]["stationName"],
+          icon: cs_image
         });
       }
     }
