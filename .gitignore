@@ -1,2 +1,5 @@
 googe_maps_api_key.sh
 .env
+*.pyc
+parser.js
+*.db

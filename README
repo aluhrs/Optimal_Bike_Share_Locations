@@ -1,0 +1,15 @@
+Optimal Locations for New Bay Area Bike Share Stations
+
+There are currently only 35 Bay Area Bike Share stations in San Francisco (http://www.bayareabikeshare.com/stations). Additionally, the stations are only located in the Embarcadero and SOMA area.
+
+Currently, people can vote for where they would like new stations to be on a crowdsourcing website (http://sfbikeshare.sfmta.com).
+
+For my project, I've used a clustering algorithm to determine approximately 30 new locations for bike share stations based on the crowdsourcing data. I've also included the ability for the user to choose locations based on the following options:
+
+1) Elevation
+2) Proximity to establishments that offer food such as Resturaunts, Cafes, and Bars
+3) Proximity to Grocery Stores
+4) Proximity to transportation such as Train Stations, Subway Stations, or Bus Stations
+5) Proximity to other points of interest such as Shopping Malls, Parks, or Home Good Stores
+
+The user can select any individual option or any combination of options to determine 30 optimal locations. 
