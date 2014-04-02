@@ -12,8 +12,8 @@ def get_location(points):
 	locations_list = []
 	
 	for i in range(len(points)):
-			if len(locations_list) < 3000:
-				if points[i].grocery_reason == None and points[i].transportation_reason == None and points[i].transportation_reason == None and points[i].food_reason == None and points[i].other_poi_reason == None:
+			if len(locations_list) < 2500:
+				if points[i].grocery_reason == None and points[i].transportation_reason == None and points[i].food_reason == None and points[i].other_poi_reason == None:
 					id = points[i].id
 					#print id
 					curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()

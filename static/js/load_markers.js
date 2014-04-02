@@ -22,8 +22,8 @@ function initialize() {
 
   // var image = '/static/images/bikesharelogo.jpeg';
   // var image = 'http://www.placekitten.com/32/32'; 
-  var image = '/static/images/rsz_baybike.png'
-  var cs_image = '/static/images/icon.png'
+  var cs_image = '/static/images/rsz_baybike.png'
+  var image = '/static/images/icon.png'
 
   var currStationList = []
   $.ajax({
@@ -103,6 +103,7 @@ $(document).ready(function(){
   // cache the legend before the map wipes it from the DOM
   legend = document.getElementById("legend");
   intro = document.getElementById("intro");
+  logo = document.getElementById("logo");
   $(".checkboxes input").click(function(){
     if($(".checkboxes input:checked").length){
       var inputList = []
@@ -121,7 +122,7 @@ $(document).ready(function(){
         contentType: "application/json"
       }).done(function(hotspots){
         var lat, lng;
-        var image = 'http://www.placekitten.com/32/32';
+        var image = '/static/images/icon.png';
         clearMarkers(newPossibleStationsList);
         newPossibleStationsList = []
         for (var i=0; i<hotspots.length; i++){

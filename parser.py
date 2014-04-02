@@ -42,6 +42,7 @@ from operator import itemgetter, attrgetter
 import numpy
 from scipy.cluster.vq import *
 import model
+import permutations
 
 
 # loop through the list of dictionaries to find all of the lats/longs and votes for each location
@@ -100,6 +101,24 @@ def upvote(db_data):
 		lng = data["longitude"]
 		num_of_appends = data["votes"]
 
+		# loop the list from permutations.py
+		perm = permutations.per()
+		tup = permutations.tuples(perm)
+		 
+		# if e is in the list:
+		for t in tup:
+			k = ''.join(t)
+			if "e" in t:
+				num_of_appends += 3
+			if "f" in t:
+				num_of_appends += 3
+			if "g" in t:
+				num_of_appends += 5
+			if "o" in t:
+				num_of_appends += 3
+			if "t" in t:
+				num_of_appends += 5
+
 		# if data["crowd_sourced_reason"]:
 		# 	crowd_sourced_reason = data["crowd_sourced_reason"]
 
@@ -108,9 +127,9 @@ def upvote(db_data):
 		# 	num_of_appends += 3
 		# 	#print "elevation: %r" % num_of_appends
 
-		if data["food_reason"]:
-			#print num_of_appends
-			num_of_appends += 3
+		# if data["food_reason"]:
+		# 	#print num_of_appends
+		# 	num_of_appends += 3
 			#print num_of_appends
 
 		# if data["grocery_reason"]:
@@ -145,14 +164,14 @@ def upvote(db_data):
 	for i in converted_kmeans:
 		lat = i[0]
 		lng = i[1]
-		key = "eo"
+		key = k
 		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key)
 		model.session.add(new_point)
 		print "A point with lat: %r and lng: %r and key: %r has been added to the database." % (lat, lng, key)
 
 	model.session.commit()
 	print "The points have been added to the Possible Stations table."
-	# return db_lats_and_longs
+	return db_lats_and_longs
 
 
 
