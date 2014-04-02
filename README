@@ -10,6 +10,6 @@ For my project, I've used a clustering algorithm to determine approximately 30 n
 2) Proximity to establishments that offer food such as Resturaunts, Cafes, and Bars
 3) Proximity to Grocery Stores
 4) Proximity to transportation such as Train Stations, Subway Stations, or Bus Stations
-5) Proximity to other points of interest such as Shopping Malls, Parks, or Home Good Stores
+5) Proximity to other points of interest such as Parks, Shopping Malls, Movie Theaters, or Home Good Stores
 
 The user can select any individual option or any combination of options to determine 30 optimal locations. 

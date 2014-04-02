@@ -3,12 +3,19 @@
   <head>
     <title>Bike Share!</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    
     <style type="text/css">
       html { height: 100% }
       body { height: 100%; margin: 0; padding: 0 }
-      #map-canvas { height: 100%; width: 100% }
+      #curr { float: left; }
+      #footer{ background: #0070CD; color: white; }
+      .icons { background: #4B4B4B; color: white;}
+      #map-canvas { height: 620px; width: 100%;}
       #legend { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; display: none;}
-      #intro { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; display: none;}
+      #intro { background: #0070CD; color: white; padding: 4px; z-index: 100; }
+      h3,p { padding: 0; margin: 0; }
+      #id { background: white;}
+      #logo {float: left;}
     </style>
     <!-- SAVE API KEY IN A SEPERATE FILE!! -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5k5lbiAeixFr-jxt4Oay-IAc0TgSp_To&sensor=false">
@@ -17,24 +24,35 @@
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
     <script src="/static/js/load_markers.js"></script>
+   <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
   </head>
   <body>
-    <div id="map-canvas"/>
-    <div id="header">
-      <div id="logo">
-        <img src="/static/images/bikesharelogo.jpeg" alt="Bay Area Bike Share">  
-      </div>
-    </div>
     <div id="intro">
+      <div id="header">
+        <a id="logo" href="http://bayareabikeshare.com/stations">
+          <img src="/static/images/Bay_Area_Bike_Share_logo.jpg" alt="Bay Area Bike Share">  
+        </a>
+      </div>
+      <div id="content">
       <h3>Find Optimal Bike Share Locations!</h3>
-      <p>The cats show the optimal bike share locations based on a crowdsourcing website.
+      <p>My project suggests optimal bike share locations based on a crowdsourcing website.
          Click on the checkboxes below to see the optimal locations change based on
          the criteria you choose.</p>
+      </div>
     </div>
+    <div class="icons">
+      <div id="curr">
+      <img src='/static/images/rsz_baybike.png'> Current Stations</img>
+      </div>
+      <div id="new">
+      <img src='/static/images/icon.png'> Optimized Locations</img>
+      </div>
+    </div>
+    <div id="map-canvas"/></div>
     <div id="legend">
       <h3>Legend</h3>
       <div class="checkboxes">
-      <form id="checkboxes" method="POST">
+        <p>
         <input id="elevation" name="elevation1" value="e" type="checkbox"></input>
         <label id="elevation_label">Elevation</label>
         <p>
@@ -51,9 +69,10 @@
         <label id="poi_label">Points Of Interest</label>
         <p>
         <!--<input type="submit" id="form_submit" value="Get Opitmal Locations"></input>-->
-      </form>
       </div>
     </div>
+    <div id="footer">
+      Thanks to Bay Area Bike Share!
     </div>
   </body>
 </html>

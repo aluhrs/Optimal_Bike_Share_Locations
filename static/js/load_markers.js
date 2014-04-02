@@ -51,7 +51,7 @@ function initialize() {
   placePossibleStations(image);
   
   map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
-  map.controls[google.maps.ControlPosition.RIGHT_TOP].push(intro);
+  //map.controls[google.maps.ControlPosition.RIGHT_TOP].push(intro);
 
 }
 
@@ -95,15 +95,15 @@ function placePossibleStations(image){
 }
 
 var legend;
-var intro;
-var logo;
+//var intro;
+//var logo;
 
 var newPossibleStationsList = [];
 $(document).ready(function(){
   // cache the legend before the map wipes it from the DOM
   legend = document.getElementById("legend");
-  intro = document.getElementById("intro");
-  logo = document.getElementById("logo");
+  //intro = document.getElementById("intro");
+  //logo = document.getElementById("logo");
   $(".checkboxes input").click(function(){
     if($(".checkboxes input:checked").length){
       var inputList = []
