@@ -25,6 +25,8 @@ function initialize() {
   var cs_image = '/static/images/rsz_baybike.png'
   var image = '/static/images/icon.png'
 
+
+
   var currStationList = []
   $.ajax({
     url: "/ajax/currentstations",
@@ -53,10 +55,14 @@ function initialize() {
   map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
   //map.controls[google.maps.ControlPosition.RIGHT_TOP].push(intro);
 
+  //clickable(marker);
+
 }
 
 // Removes the Markers from the map
 function clearMarkers(list) {
+  console.log("this should be displaying");
+  console.log(list);
   placeMarker(list, null);
 }
 
@@ -90,8 +96,19 @@ function placePossibleStations(image){
         }));
       }
       placeMarker(possibleStationsList, map);     
+
     });
   }
+}
+
+function clickable(marker) {
+  var infowindow = new google.maps.InfoWindow({
+    content: "Opitmal Bike Location"
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(marker.get('map'), marker);
+  });
 }
 
 var legend;
@@ -104,10 +121,10 @@ $(document).ready(function(){
   legend = document.getElementById("legend");
   //intro = document.getElementById("intro");
   //logo = document.getElementById("logo");
-  $(".checkboxes input").click(function(){
-    if($(".checkboxes input:checked").length){
+  $(".checkboxes input").click(function() {
+    if($(".checkboxes input:checked").length) {
       var inputList = []
-      for (var i=0; i<$(".checkboxes input:checked").length; i++){
+      for (var i=0; i<$(".checkboxes input:checked").length; i++) {
         inputList.push($(".checkboxes input:checked")[i]["value"]);
       }
       console.log("this is the console.log: " + inputList);
@@ -120,12 +137,12 @@ $(document).ready(function(){
         data: {"li": inputList},
         dataType: "json",
         contentType: "application/json"
-      }).done(function(hotspots){
+      }).done(function(hotspots) {
         var lat, lng;
         var image = '/static/images/icon.png';
         clearMarkers(newPossibleStationsList);
         newPossibleStationsList = []
-        for (var i=0; i<hotspots.length; i++){
+        for (var i=0; i<hotspots.length; i++) {
           lat = hotspots[i]["latitude"];
           lng = hotspots[i]["longitude"];
           id = hotspots[i]["id"];
@@ -139,8 +156,7 @@ $(document).ready(function(){
         placeMarker(newPossibleStationsList, map); 
       }
       })
-    }
-    else {
+    } else {
       clearMarkers(newPossibleStationsList);
       placeMarker(possibleStationsList, map);
       if (newPossibleStationsList != []) {
@@ -148,8 +164,36 @@ $(document).ready(function(){
       }
     }
   });
-  
+
+  var crowdSourced = [];
+  $("#all_data").change(function() {
+    if(this.checked) {
+      
+      $.ajax({
+        url: "/ajax/allcrowdsourced",
+        dataType: "json"
+      }).done(function(data) {
+        var id, lat, lng;
+        for (var i=0; i<data.length; i++) {
+          id = data[i]["id"]
+          lat = data[i]["latitude"]
+          lng = data[i]["longitude"]
+          crowdSourced.push(new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            map: map,
+            title: "'" + id + "'"
+          }));
+        }
+        placeMarker(crowdSourced, map);
+        console.log(crowdSourced.length); 
+      })
+    } else {
+      clearMarkers(crowdSourced);
+      crowdSourced = [];
+    }
+    });
+
 
   // load the map
   google.maps.event.addDomListener(window, 'load', initialize);
-})
+});

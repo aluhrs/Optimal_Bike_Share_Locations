@@ -16,6 +16,27 @@ def load_map():
 	# load from the db and pass them to jinja
 	return render_template("map.html")
 
+@app.route("/ajax/allcrowdsourced")
+def all_crowdsourced():
+	the_app = model.Crowd_Sourced()
+	ret = the_app.to_dict()
+
+
+	return json.dumps(ret)
+
+	# l = []
+
+	# for line in f:
+	# 	split_data = line.split()
+	# 	#print split_data
+	# 	d = {}
+	# 	d["id"] = split_data[0]
+	# 	d["latitude"] = split_data[1]
+	# 	d["longitude"] = split_data[2]
+	# 	l.append(d)
+
+	# return json.dumps(l)
+
 @app.route("/ajax/currentstations")
 def current_stations():
 	the_app = model.Current_Station()
@@ -50,6 +71,7 @@ def toggle_checkboxes():
 		d = {}
 		d["latitude"] = float(query[q].latitude)
 		d["longitude"] = float(query[q].longitude)
+		d["key"] = query[q].key
 		ret.append(d)
 		#lat = query[q]["latitude"]
 		#lng = query[q]["longitude"]

@@ -5,12 +5,12 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     
     <style type="text/css">
-      a:link { color: black; }
       html { height: 100% }
       body { height: 100%; margin: 0; padding: 0; background: #0070CD !important;}
       #curr { float: left; }
       #footer { background: #0070CD; color: white;   position:fixed; left:0px; bottom:0px; height:30px; width:100%; }
-      #footer_content { padding: 5px 10px; }
+      #footer_left { padding: 5px 10px; float: left; }
+      #footer_right { padding: 5px 10px; }
       .icons { background: #4B4B4B; color: white; padding: 5px 0 5px 20px; }
       #curr { padding-right: 10px }
       #map-canvas { height: 80%; width: 100%;}
@@ -53,6 +53,10 @@
     </div>
     <div id="map-canvas"/></div>
     <div id="legend">
+        <p>
+          <input id="all_data" name="all_data1" value="a" type="checkbox"></input>
+          <label id="all_data_label">All Source Data</label>
+        <p>
       <div class="checkboxes">
         <p>
         <input id="elevation" name="elevation1" value="e" type="checkbox"></input>
@@ -73,8 +77,11 @@
       </div>
     </div>
     <div id="footer">
-      <div id="footer_content">
+      <div id="footer_left">
         Thanks to Bay Area Bike Share!
+      </div>
+      <div id="footer_right">
+        <a href="http://github.com/aluhrs" style="color: #A0A0A0">github.com/aluhrs</a>
       </div>
     </div>
   </body>
