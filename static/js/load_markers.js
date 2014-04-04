@@ -38,7 +38,7 @@ function initialize() {
     for (var i=0; i<stations.length; i++) {
       lat = stations[i]["latitude"];
       lng = stations[i]["longitude"];
-      if (stations[i]["city"] == "San Francisco") {
+      //if (stations[i]["city"] == "San Francisco") {
         // place the lat, longs on the map        
         marker = new google.maps.Marker({
           position: new google.maps.LatLng(lat,lng),
@@ -48,7 +48,7 @@ function initialize() {
           });
         //attachEventListener(list[i])
         //});
-      }
+      //}
     }
     
   });
@@ -86,6 +86,7 @@ function attachEventListener(marker){
 function placeMarker(list, theMap){
   //console.log(list.length);
   for (var i=0; i<list.length; i++){
+    console.log(list.length);
     list[i].setMap(theMap);
     if (theMap != null){
       attachEventListener(list[i]);
@@ -104,7 +105,7 @@ function placePossibleStations(image){
       url: "/ajax/possiblestations",
       dataType: "json"          
     }).done(function(hotspots){
-      var lat, lng;
+      var lat, lng, message, infowindow;
       for (var i=0; i<hotspots.length; i++) {
         lat = hotspots[i]["latitude"];
         lng = hotspots[i]["longitude"];
@@ -115,7 +116,8 @@ function placePossibleStations(image){
           map: map,
           title: "'" + key + "'",
           icon: image
-        }));
+        })
+      );
       }
       placeMarker(possibleStationsList, map);     
 
@@ -123,16 +125,11 @@ function placePossibleStations(image){
   }
 }
 
-
-
-function clickable(marker) {
-  var infowindow = new google.maps.InfoWindow({
-    content: "Opitmal Bike Location"
-  });
-
-
-
-}
+// function clickable(marker) {
+//   var infowindow = new google.maps.InfoWindow({
+//     content: "Opitmal Bike Location"
+//   });
+//}
 
 var legend;
 
@@ -174,9 +171,9 @@ $(document).ready(function(){
             title: "'" + key + "'",
             icon: image
           }));
-
+        }
+        console.log(newPossibleStationsList.length);
         placeMarker(newPossibleStationsList, map); 
-      }
       })
     } else {
       clearMarkers(newPossibleStationsList);
