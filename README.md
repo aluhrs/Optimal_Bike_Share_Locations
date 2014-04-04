@@ -1,4 +1,5 @@
-Alt-H1Optimal Locations for New Bay Area Bike Share Stations
+##Optimal Locations for New Bay Area Bike Share Stations
+======
 ####Website: http://optimalbikeshare.herokuapp.com/
 
 I use a bike sharing program called Bay Area Bike Share (http://bayareabikeshare.com/). With Bay Area Bike Share, you can get a bike at any of the current 35 stations in the city and ride up to 30 minutes at a time to another station. Especially since I don't have a car, I love it. However, the 35 Bay Area Bike Share stations in San Francisco (http://www.bayareabikeshare.com/stations) are only located in the Financial District and SOMA area. If I want to go to Golden Gate Park or Dolores Park, I'm out of luck.
