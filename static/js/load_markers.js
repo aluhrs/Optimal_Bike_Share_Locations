@@ -2,7 +2,7 @@
 
 var map;
 function initialize() {
-
+  //var marker;
   $("#legend").css({"display":"block"});
   $("#intro").css({"display":"block"});
 
@@ -20,11 +20,13 @@ function initialize() {
   var bikeLayer = new google.maps.BicyclingLayer();
   bikeLayer.setMap(map);
 
+  var transitLayer = new google.maps.TransitLayer();
+  transitLayer.setMap(map);
+
   // var image = '/static/images/bikesharelogo.jpeg';
   // var image = 'http://www.placekitten.com/32/32'; 
   var cs_image = '/static/images/rsz_baybike.png'
   var image = '/static/images/icon.png'
-
 
 
   var currStationList = []
@@ -43,11 +45,14 @@ function initialize() {
           map: map,
           title: stations[i]["stationName"],
           icon: cs_image
-        });
+          });
+        //attachEventListener(list[i])
+        //});
       }
     }
     
   });
+
 
 
   placePossibleStations(image);
@@ -66,10 +71,25 @@ function clearMarkers(list) {
   placeMarker(list, null);
 }
 
+function attachEventListener(marker){
+  google.maps.event.addListener(marker, 'click', function(){
+    console.log(marker["title"] + " got clicked!");
+    //marker["title"] + <p> + "This spot has " + marker["clusters"] "in its cluster."
+    var message = marker["title"] + " got clicked!"
+    var infowindow = new google.maps.InfoWindow({
+      content: message
+    });
+    infowindow.open(marker.get('map'), marker);
+  });
+}
+
 function placeMarker(list, theMap){
   //console.log(list.length);
   for (var i=0; i<list.length; i++){
     list[i].setMap(theMap);
+    if (theMap != null){
+      attachEventListener(list[i]);
+    }
   }
 }
 
@@ -88,10 +108,12 @@ function placePossibleStations(image){
       for (var i=0; i<hotspots.length; i++) {
         lat = hotspots[i]["latitude"];
         lng = hotspots[i]["longitude"];
+        key = hotspots[i]["key"];
+        //clusters = hotspots[i]["num_of_clusters"]
         possibleStationsList.push(new google.maps.Marker({
           position: new google.maps.LatLng(lat,lng),
           map: map,
-          title: "Possible Hot Spot",
+          title: "'" + key + "'",
           icon: image
         }));
       }
@@ -101,17 +123,19 @@ function placePossibleStations(image){
   }
 }
 
+
+
 function clickable(marker) {
   var infowindow = new google.maps.InfoWindow({
     content: "Opitmal Bike Location"
   });
 
-  google.maps.event.addListener(marker, 'click', function() {
-    infowindow.open(marker.get('map'), marker);
-  });
+
+
 }
 
 var legend;
+
 //var intro;
 //var logo;
 
@@ -129,8 +153,6 @@ $(document).ready(function(){
       }
       console.log("this is the console.log: " + inputList);
       clearMarkers(possibleStationsList);
-      //clearMarkers(newPossibleStationsList);
-
       $.ajax({
         url: "/ajax/legend",
         type: "GET",
@@ -145,11 +167,11 @@ $(document).ready(function(){
         for (var i=0; i<hotspots.length; i++) {
           lat = hotspots[i]["latitude"];
           lng = hotspots[i]["longitude"];
-          id = hotspots[i]["id"];
+          key = hotspots[i]["key"];
           newPossibleStationsList.push(new google.maps.Marker({
             position: new google.maps.LatLng(lat,lng),
             map: map,
-            title: "id",
+            title: "'" + key + "'",
             icon: image
           }));
 
@@ -168,7 +190,6 @@ $(document).ready(function(){
   var crowdSourced = [];
   $("#all_data").change(function() {
     if(this.checked) {
-      
       $.ajax({
         url: "/ajax/allcrowdsourced",
         dataType: "json"
@@ -192,6 +213,8 @@ $(document).ready(function(){
       crowdSourced = [];
     }
     });
+
+
 
 
   // load the map

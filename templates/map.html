@@ -21,7 +21,7 @@
       #logo {float: left;}
     </style>
     <!-- SAVE API KEY IN A SEPERATE FILE!! -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC5k5lbiAeixFr-jxt4Oay-IAc0TgSp_To&sensor=false">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{gkey}}&sensor=false">
     </script>
     <!-- pull in the jquery library -->
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -53,10 +53,6 @@
     </div>
     <div id="map-canvas"/></div>
     <div id="legend">
-        <p>
-          <input id="all_data" name="all_data1" value="a" type="checkbox"></input>
-          <label id="all_data_label">All Source Data</label>
-        <p>
       <div class="checkboxes">
         <p>
         <input id="elevation" name="elevation1" value="e" type="checkbox"></input>
@@ -75,6 +71,10 @@
         <label id="poi_label">Points Of Interest</label>
         <!--<input type="submit" id="form_submit" value="Get Opitmal Locations"></input>-->
       </div>
+        <p>
+          <input id="all_data" name="all_data1" value="a" type="checkbox"></input>
+          <label id="all_data_label">All Source Data</label>
+        <p>
     </div>
     <div id="footer">
       <div id="footer_left">
