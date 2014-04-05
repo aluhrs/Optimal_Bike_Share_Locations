@@ -14,7 +14,7 @@ app.secret_key = config.SECRET_KEY
 @app.route("/")
 def load_map():
 	# load from the db and pass them to jinja
-	return render_template("map.html")
+	return render_template("map.html", gkey=config.GOOGLE_API_KEY)
 
 @app.route("/ajax/allcrowdsourced")
 def all_crowdsourced():
@@ -23,19 +23,6 @@ def all_crowdsourced():
 
 
 	return json.dumps(ret)
-
-	# l = []
-
-	# for line in f:
-	# 	split_data = line.split()
-	# 	#print split_data
-	# 	d = {}
-	# 	d["id"] = split_data[0]
-	# 	d["latitude"] = split_data[1]
-	# 	d["longitude"] = split_data[2]
-	# 	l.append(d)
-
-	# return json.dumps(l)
 
 @app.route("/ajax/currentstations")
 def current_stations():
@@ -72,10 +59,8 @@ def toggle_checkboxes():
 		d["latitude"] = float(query[q].latitude)
 		d["longitude"] = float(query[q].longitude)
 		d["key"] = query[q].key
+		#d["clusters"] = int(query[q].num_in_clusters)
 		ret.append(d)
-		#lat = query[q]["latitude"]
-		#lng = query[q]["longitude"]
-		#ret.append[lat, lng))
 	
 	return json.dumps(ret)
 

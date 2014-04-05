@@ -17,6 +17,7 @@ Base = declarative_base()
 Base.query = session.query_property()
 
 class Current_Station(Base):
+	"""This table contains all information for the current bike share stations"""
 	__tablename__ = "current_stations"
 	id = Column(Integer, primary_key=True)
 	station_name = Column(String(100), nullable=False)
@@ -27,7 +28,6 @@ class Current_Station(Base):
 
 
 	def to_dict(self):
-		# query the database
 		stations = session.query(Current_Station).all()
 		ret = []
 		for s in stations:
@@ -43,6 +43,9 @@ class Current_Station(Base):
 
 
 class Crowd_Sourced(Base):
+	"""This table contains all the data scraped from the crowd sourced
+	website: http://sfbikeshare.sfmta.com/. Additionally, it houses all
+	the reasons for upvoting a location"""
 	__tablename__ = "crowd_sourced"
 	id = Column(Integer, primary_key=True)
 	latitude = Column(Numeric(11,8), nullable=False)
@@ -56,10 +59,10 @@ class Crowd_Sourced(Base):
 	transportation_reason = Column(Boolean, nullable=True)
 	food_reason = Column(Boolean, nullable=True)
 	other_poi_reason = Column(Boolean, nullable=True)
+	
 
 
 	def to_dict(self):
-		# query the database
 		stations = session.query(Crowd_Sourced).all()
 		ret = []
 		for s in stations:
@@ -68,18 +71,25 @@ class Crowd_Sourced(Base):
 			d["latitude"] = float(s.latitude)
 			d["longitude"] = float(s.longitude)
 			d["votes"] = int(s.votes)
-			d["elevation"] = float(s.elevation)
-			d["elevation_reason"] = s.elevation_reason
-			d["grocery_reason"] = s.grocery_reason
-			d["transportation_reason"] = s.transportation_reason
-			d["food_reason"] = s.food_reason
-			d["other_poi_reason"] = s.other_poi_reason
+			if s.elevation:
+				d["elevation"] = float(s.elevation)
+			if s.elevation_reason:
+				d["elevation_reason"] = s.elevation_reason
+			if s.grocery_reason:
+				d["grocery_reason"] = s.grocery_reason
+			if s.transportation_reason:
+				d["transportation_reason"] = s.transportation_reason
+			if s.food_reason:
+				d["food_reason"] = s.food_reason
+			if s.other_poi_reason:
+				d["other_poi_reason"] = s.other_poi_reason
+
 			ret.append(d)
 
 		return ret
 
+
 	def get_elevation(self):
-		# query the database
 		stations = session.query(Crowd_Sourced).order_by(Crowd_Sourced.latitude, Crowd_Sourced.longitude).all()
 		ret = []
 		for s in stations:
@@ -96,17 +106,20 @@ class Crowd_Sourced(Base):
 		return ret
 
 
-
 class Possible_Station(Base):
+	"""This table contains the optimized locations for each key
+	based on the kmeans clustering algorithm."""
 	__tablename__ = "possible_stations"
 	id = Column(Integer, primary_key=True)
 	latitude = Column(Numeric(11, 8), nullable=False)
 	longitude = Column(Numeric(11, 8), nullable=False)
 	name = Column(String(100), nullable=True)
 	key = Column(String(100), nullable=True)
+	cluster = Column(Integer, nullable=True)
+	cluster_length = Column(Integer, nullable=True)
+	cluster_rank = Column(Integer, nullable=True)
 
 	def to_dict(self):
-		# query the database
 		stations = session.query(Possible_Station).all()
 		ret = []
 		for s in stations:
@@ -115,6 +128,9 @@ class Possible_Station(Base):
 			d["latitude"] = float(s.latitude)
 			d["longitude"] = float(s.longitude)
 			d["key"] = s.key
+			d["cluster"] = int(s.cluster)
+			d["cluster_length"] = int(s.cluster_length)
+			d["cluster_rank"] = int(s.cluster_rank)
 			ret.append(d)
 
 		return ret
@@ -122,16 +138,6 @@ class Possible_Station(Base):
 
 def create_tables():
     Base.metadata.create_all(engine)
-
-	# create nullable fields for elevation, population, etc
-	# send a hundred coordinates from crowdsourced data, 
-	# get elevation data then populate data
-
-#class Hot_Spots(Base):
-	#__tablename__ = "hot_spots"
-	# id, lat, long, station name(intersection), 
-	# amount of crowdsourced votes - use this to filter out insignificant spots
-	# find grocery stores/other things
 
 if __name__ == "__main__":
 	create_tables()

@@ -75,7 +75,8 @@ function attachEventListener(marker){
   google.maps.event.addListener(marker, 'click', function(){
     console.log(marker["title"] + " got clicked!");
     //marker["title"] + <p> + "This spot has " + marker["clusters"] "in its cluster."
-    var message = marker["title"] + " got clicked!"
+    var message = "<b>" + "Ranked: " + marker["cluster_rank"] + "</b>" + "<p>" + "<p>" + "This spot has " + marker["cluster_length"] + " points in its cluster.";
+    //marker["title"] + " got clicked!"
     var infowindow = new google.maps.InfoWindow({
       content: message
     });
@@ -86,7 +87,7 @@ function attachEventListener(marker){
 function placeMarker(list, theMap){
   //console.log(list.length);
   for (var i=0; i<list.length; i++){
-    console.log(list.length);
+    //console.log(list.length);
     list[i].setMap(theMap);
     if (theMap != null){
       attachEventListener(list[i]);
@@ -107,15 +108,21 @@ function placePossibleStations(image){
     }).done(function(hotspots){
       var lat, lng, message, infowindow;
       for (var i=0; i<hotspots.length; i++) {
+        console.log(hotspots.length);
         lat = hotspots[i]["latitude"];
         lng = hotspots[i]["longitude"];
         key = hotspots[i]["key"];
-        //clusters = hotspots[i]["num_of_clusters"]
+        cluster = hotspots[i]["cluster"]
+        cluster_length = hotspots[i]["cluster_length"]
+        cluster_rank = hotspots[i]["cluster_rank"]
         possibleStationsList.push(new google.maps.Marker({
           position: new google.maps.LatLng(lat,lng),
           map: map,
           title: "'" + key + "'",
-          icon: image
+          icon: image,
+          cluster: cluster,
+          cluster_length: cluster_length,
+          cluster_rank: cluster_rank
         })
       );
       }

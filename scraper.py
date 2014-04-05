@@ -1,10 +1,6 @@
-"""
-
-This script scrapes the BikeShare crowdsourcing website.
+"""This script scrapes the BikeShare crowdsourcing website.
 It does not currently save to a file, but prints to the screen.
-The data needs to copied and pasted to an outside file and slightly cleaned up.
-
-"""
+The data needs to copied and pasted to an outside file and slightly cleaned up."""
 from bs4 import BeautifulSoup
 from urllib2 import urlopen
 import json

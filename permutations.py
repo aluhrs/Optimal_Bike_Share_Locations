@@ -1,3 +1,5 @@
+"""This file loop through the possible reasons and generates all possible keys"""
+
 from itertools import permutations
 from itertools import product
 
