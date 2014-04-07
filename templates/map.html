@@ -11,14 +11,16 @@
       #footer { background: #0070CD; color: white;   position:fixed; left:0px; bottom:0px; height:30px; width:100%; }
       #footer_left { padding: 5px 10px; float: left; }
       #footer_right { padding: 5px 10px; float: right;}
-      .icons { background: #4B4B4B; color: white; padding: 5px 0 5px 20px; }
+      .nav_bar { background: #4B4B4B; color: white; padding: 5px 0 5px 100px; }
       #curr { padding-right: 10px }
       #map-canvas { height: 80%; width: 100%;}
       #legend { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; display: none;}
       #intro { background: #0070CD; color: white; padding: 4px; z-index: 100; }
       h3,p { padding: 0; margin: 0; }
       #id { background: white;}
-      #logo {float: left;}
+      #logo { float: left; padding: 0 0 0 56px;}
+      .rank { background: #82C7BC; padding: 2px 0px 2px 90px; }
+      .ranked_link { color: white; padding: 0px 0px 0px 11px; }
     </style>
     <!-- SAVE API KEY IN A SEPERATE FILE!! -->
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{gkey}}&sensor=false">
@@ -38,19 +40,26 @@
       </div>
       <div id="content">
       <h3>Find Optimal Bike Share Locations!</h3>
-      <p>My project suggests optimal bike share locations based on a <a style="color: #A0A0A0" href="http://sfbikeshare.sfmta.com/" target="_blank">crowdsourcing website.</a>
+      <p>My project suggests optimal bike share locations based on a <a style="color: #84C8BF" href="http://sfbikeshare.sfmta.com/" target="_blank">crowdsourcing website.</a>
          Click on the checkboxes below to see the optimal locations change based on
          the criteria you choose.</p>
       </div>
     </div>
-    <div class="icons">
-      <div id="curr">
-      <img src='/static/images/rsz_baybike.png'> Current Stations</img>
+    <div class="nav_bar">
+      <div id="curr" class="icons">
+        <img src='/static/images/rsz_baybike.png'> Current Stations</img>
       </div>
-      <div id="new">
-      <img src='/static/images/icon.png'> Optimized Locations</img>
+      <div id="new" class="icons">
+        <img src='/static/images/icon.png'> Optimized Locations</img>
       </div>
     </div>
+    <!--<div class="rank">
+      <a id="one" class="ranked_link">Top Point</a>
+      <a id="five" class="ranked_link">Top 5</a>
+      <a id="10" class="ranked_link">Top 10</a>
+      <a id="25" class="ranked_link">Top 25</a>
+      <a id="50" class="ranked_link">Top 50</a>
+    </div>-->
     <div id="map-canvas"/></div>
     <div id="legend">
       <div class="checkboxes">
@@ -81,7 +90,7 @@
         Thanks to Bay Area Bike Share!
       </div>
       <div id="footer_right">
-        <a href="http://github.com/aluhrs" style="color: #A0A0A0">github.com/aluhrs</a>
+        <a href="http://github.com/aluhrs" style="color: #84C8BF">github.com/aluhrs</a>
       </div>
     </div>
   </body>

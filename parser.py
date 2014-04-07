@@ -19,12 +19,13 @@ the second part of the array is the grouping each spot is in
 
 """
 
-from sys import argv
 import json
-from operator import itemgetter, attrgetter
-import numpy
-from scipy.cluster.vq import *
 import model
+import numpy
+from operator import itemgetter, attrgetter
+from scipy.cluster.vq import *
+from sys import argv
+
 
 def position_and_votes(bike_locations):
 	"""loop through the list of dictionaries to find all of the lats/longs and votes for each location"""	

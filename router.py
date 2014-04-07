@@ -50,7 +50,7 @@ def toggle_checkboxes():
 	list_args = request.args.getlist("li[]")
 	s_list_args = sorted(list_args)
 	key = ''.join(s_list_args)
-	print "key: ", key
+	#print "key: ", key
 
 	ret = []
 	query = model.session.query(model.Possible_Station).filter_by(key=key).all()
@@ -59,7 +59,9 @@ def toggle_checkboxes():
 		d["latitude"] = float(query[q].latitude)
 		d["longitude"] = float(query[q].longitude)
 		d["key"] = query[q].key
-		#d["clusters"] = int(query[q].num_in_clusters)
+		d["cluster"] = int(query[q].cluster)
+		d["cluster_length"] = int(query[q].cluster_length)
+		d["cluster_rank"] = int(query[q].cluster_rank)
 		ret.append(d)
 	
 	return json.dumps(ret)

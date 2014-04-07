@@ -8,12 +8,12 @@ This file:
 
 """
 
-import model
-import urllib2
+import config
 import json
 import math
+import model
 import os
-import config
+import urllib2
 
 points = model.session.query(model.Crowd_Sourced).all()
 
@@ -24,7 +24,7 @@ def get_location(points):
 	
 	for i in range(len(points)):
 			if points[i].elevation == None:
-				if len(elevations) < 1000:
+				if len(elevations) < 300:
 					id = points[i].id
 					latitude = points[i].latitude
 					longitude = points[i].longitude				
@@ -147,6 +147,7 @@ def send_to_db_elevation(dictionary):
 def update_elevation():
 	the_app = model.Crowd_Sourced()
 	all_elevation = the_app.to_dict()
+	#print all_elevation
 	# for each point, get the elevation, and check for the elevation of 
 	# surrounding data points within .004 range of each lat/lng
 	d = {}
@@ -164,6 +165,7 @@ def update_elevation():
 		d[i["id"]]["dictel"] = {}
 		d[i["id"]]["dictel"]["el"] = 0
 		for j in all_elevation:
+			#print j
 			lat_j = j["latitude"]
 			lng_j = j["longitude"]
 			el_j = j["elevation"]
@@ -184,6 +186,6 @@ def update_elevation():
 
 
 if __name__ == "__main__":
-	url = get_location(points)
+	#url = get_location(points)
 	elevation = update_elevation()
 	create_file(elevation)

@@ -16,10 +16,11 @@ function initialize() {
   map = new google.maps.Map(document.getElementById("map-canvas"),
       mapOptions);
 
-  // layer the map with the bike routes
+  // layer the map with the Google Maps bike routes
   var bikeLayer = new google.maps.BicyclingLayer();
   bikeLayer.setMap(map);
 
+  // layer the map with the Google Maps tranit routes
   var transitLayer = new google.maps.TransitLayer();
   transitLayer.setMap(map);
 
@@ -66,14 +67,14 @@ function initialize() {
 
 // Removes the Markers from the map
 function clearMarkers(list) {
-  console.log("this should be displaying");
-  console.log(list);
+  //console.log("this should be displaying");
+  //console.log(list);
   placeMarker(list, null);
 }
 
 function attachEventListener(marker){
   google.maps.event.addListener(marker, 'click', function(){
-    console.log(marker["title"] + " got clicked!");
+    //console.log(marker["title"] + " got clicked!");
     //marker["title"] + <p> + "This spot has " + marker["clusters"] "in its cluster."
     var message = "<b>" + "Ranked: " + marker["cluster_rank"] + "</b>" + "<p>" + "<p>" + "This spot has " + marker["cluster_length"] + " points in its cluster.";
     //marker["title"] + " got clicked!"
@@ -108,13 +109,13 @@ function placePossibleStations(image){
     }).done(function(hotspots){
       var lat, lng, message, infowindow;
       for (var i=0; i<hotspots.length; i++) {
-        console.log(hotspots.length);
+        //console.log(hotspots.length);
         lat = hotspots[i]["latitude"];
         lng = hotspots[i]["longitude"];
         key = hotspots[i]["key"];
-        cluster = hotspots[i]["cluster"]
-        cluster_length = hotspots[i]["cluster_length"]
-        cluster_rank = hotspots[i]["cluster_rank"]
+        cluster = hotspots[i]["cluster"];
+        cluster_length = hotspots[i]["cluster_length"];
+        cluster_rank = hotspots[i]["cluster_rank"];
         possibleStationsList.push(new google.maps.Marker({
           position: new google.maps.LatLng(lat,lng),
           map: map,
@@ -126,6 +127,7 @@ function placePossibleStations(image){
         })
       );
       }
+      console.log(possibleStationsList.length);
       placeMarker(possibleStationsList, map);     
 
     });
@@ -172,14 +174,21 @@ $(document).ready(function(){
           lat = hotspots[i]["latitude"];
           lng = hotspots[i]["longitude"];
           key = hotspots[i]["key"];
+          cluster = hotspots[i]["cluster"];
+          cluster_length = hotspots[i]["cluster_length"];
+          cluster_rank = hotspots[i]["cluster_rank"];
+          //console.log(lat, lng, key, cluster, cluster_length, cluster_rank)
           newPossibleStationsList.push(new google.maps.Marker({
             position: new google.maps.LatLng(lat,lng),
             map: map,
             title: "'" + key + "'",
-            icon: image
+            icon: image,
+            cluster: cluster,
+            cluster_length: cluster_length,
+            cluster_rank: cluster_rank
           }));
         }
-        console.log(newPossibleStationsList.length);
+        //console.log(newPossibleStationsList.length);
         placeMarker(newPossibleStationsList, map); 
       })
     } else {
@@ -210,7 +219,7 @@ $(document).ready(function(){
           }));
         }
         placeMarker(crowdSourced, map);
-        console.log(crowdSourced.length); 
+        //console.log(crowdSourced.length); 
       })
     } else {
       clearMarkers(crowdSourced);
