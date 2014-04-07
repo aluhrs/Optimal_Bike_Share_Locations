@@ -13,7 +13,7 @@ They are planning on expanding the program and create more stations around the c
 For my project, I decided I want to help them decide where to put new stations. I scraped the data from the crowdsourcing website, and I used the kmeans clusering algorithm to determine new locations. 
 
 ###Kmeans Clustering:
-Given a dataset and the number of clusters desired, the data is partitioned into clusters and a single spot representing each cluster.
+Given a dataset and the number of clusters desired, the data is partitioned into clusters and a single spot is created to represent each cluster.
 
 ![landing_page](https://raw.githubusercontent.com/aluhrs/Optimal_Bike_Share_Locations/master/images/landing.png)
 
