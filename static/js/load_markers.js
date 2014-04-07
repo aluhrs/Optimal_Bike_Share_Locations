@@ -24,10 +24,10 @@ function initialize() {
   transitLayer.setMap(map);
 
   // all of the images used on the page
-  var cs_image = '/static/images/rsz_baybike.png'
-  var top_one = '/static/images/icon.png'
-  var top_ten = '/static/images/green_icon.png'
-  var rest = '/static/images/gray_icon.png'
+  var cs_image = '/static/images/rsz_baybike.png';
+  var top_one = '/static/images/green_icon.png';
+  var top_ten = '/static/images/icon.png';
+  var rest = '/static/images/gray_icon.png';
   var image = []; 
   image.push(top_one, top_ten, rest);
 
@@ -179,8 +179,8 @@ $(document).ready(function(){
         contentType: "application/json"
       }).done(function(hotspots) {
         var lat, lng, cluster, cluster_length, cluster_rank;
-        var top_one = '/static/images/icon.png'
-        var top_ten = '/static/images/green_icon.png'
+        var top_one = '/static/images/green_icon.png'
+        var top_ten = '/static/images/icon.png'
         var rest = '/static/images/gray_icon.png'
         clearMarkers(newPossibleStationsList);
         newPossibleStationsList = []
