@@ -66,6 +66,9 @@ def toggle_checkboxes():
 	
 	return json.dumps(ret)
 
+@app.route("/ajax/topone")
+def top_one():
+	pass
 
 if __name__ == "__main__":
     #port = int(os.environ.get('PORT', 5000))
