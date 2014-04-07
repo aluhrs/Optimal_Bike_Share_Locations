@@ -1,6 +1,5 @@
 var map;
 function initialize() {
-  //var marker;
   $("#legend").css({"display":"block"});
   $("#intro").css({"display":"block"});
 
@@ -14,21 +13,27 @@ function initialize() {
   map = new google.maps.Map(document.getElementById("map-canvas"),
       mapOptions);
 
+  // this is current not showing, but this can be toggled to
   // layer the map with the Google Maps bike routes
-  var bikeLayer = new google.maps.BicyclingLayer();
-  bikeLayer.setMap(map);
+  // the transit layer would then need to be turned off
+  // var bikeLayer = new google.maps.BicyclingLayer();
+  // bikeLayer.setMap(map);
 
   // layer the map with the Google Maps tranit routes
   var transitLayer = new google.maps.TransitLayer();
   transitLayer.setMap(map);
 
+  // all of the images used on the page
   var cs_image = '/static/images/rsz_baybike.png'
   var top_one = '/static/images/icon.png'
   var top_ten = '/static/images/green_icon.png'
   var rest = '/static/images/gray_icon.png'
-  var image = [];
+  var image = []; 
   image.push(top_one, top_ten, rest);
 
+  // display the current stations on load
+  // this list does not change, so thsese
+  // are never removed from the page
   var currStationList = []
   $.ajax({
     url: "/ajax/currentstations",
@@ -37,20 +42,21 @@ function initialize() {
     var lat, lng;
     for (var i=0; i<stations.length; i++) {
       lat = stations[i]["latitude"];
-      lng = stations[i]["longitude"];
-      //if (stations[i]["city"] == "San Francisco") {
-        // place the lat, longs on the map        
-        marker = new google.maps.Marker({
-          position: new google.maps.LatLng(lat,lng),
-          map: map,
-          title: stations[i]["stationName"],
-          icon: cs_image
-          });
+      lng = stations[i]["longitude"];     
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(lat,lng),
+        map: map,
+        title: stations[i]["stationName"],
+        icon: cs_image
+        });
     }
   });
 
+  // This places the optimal locations based solely
+  // on crowd sourcing data the list of images is passed as well
   placePossibleStations(image);
   
+  // This pushes the checkbox options to the button right of the map
   map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
 }
 
@@ -59,9 +65,10 @@ function clearMarkers(list) {
   placeMarker(list, null);
 }
 
+// Attaches a click event listener to attach a pop up
+// to each marker that lists its rank
 function attachEventListener(marker){
   google.maps.event.addListener(marker, 'click', function(){
-    console.log(marker["title"] + " got clicked!");
     var message = "<b>" + "Ranked: " + marker["cluster_rank"] + "</b>" + "<p>" + "<p>" + "This spot has " + marker["cluster_length"] + " points in its cluster.";
     var infowindow = new google.maps.InfoWindow({
       content: message
@@ -70,19 +77,18 @@ function attachEventListener(marker){
   });
 }
 
+// Places the markers on the map
+// If theMap exists, attach an event listener
 function placeMarker(list, theMap){
-  console.log(list.length);
-  console.log(theMap);
   for (var i=0; i<list.length; i++){
-    console.log(theMap);
     list[i].setMap(theMap);
     if (theMap != null){
-      console.log("this should be displaying");
       attachEventListener(list[i]);
     }
   }
 }
 
+// The logic for placing the crowd sourced hot spots on the map
 var possibleStationsList = [];
 function placePossibleStations(image)
 {
@@ -107,6 +113,8 @@ function placePossibleStations(image)
         cluster = hotspots[i]["cluster"];
         cluster_length = hotspots[i]["cluster_length"];
         cluster_rank = hotspots[i]["cluster_rank"];
+        // Determine the rank of each point and assign a
+        // an icon to visually show rank
         if (cluster_rank == 1) 
         {
           possibleStationsList.push(new google.maps.Marker({
@@ -149,9 +157,9 @@ function placePossibleStations(image)
   }
 }
 
-
 var legend;
 
+// Logic for placing all the optimized locations based on the checkbox(es) selected
 var newPossibleStationsList = [];
 $(document).ready(function(){
   // cache the legend before the map wipes it from the DOM
@@ -183,10 +191,10 @@ $(document).ready(function(){
           cluster = hotspots[i]["cluster"];
           cluster_length = hotspots[i]["cluster_length"];
           cluster_rank = hotspots[i]["cluster_rank"];
-          //console.log(lat, lng, key, cluster, cluster_length, cluster_rank)
+          // Determine the rank of each point and assign a
+          // an icon to visually show rank
           if (cluster_rank == 1) 
         {
-          //console.log("this is the top one" + lat,lng, top_one);
           newPossibleStationsList.push(new google.maps.Marker({
             position: new google.maps.LatLng(lat,lng),
             map: map,
@@ -236,6 +244,7 @@ $(document).ready(function(){
     }
   });
 
+  // Logic for placing all of the source data on the map
   var crowdSourced = [];
   $("#all_data").change(function() {
     if(this.checked) {
@@ -255,16 +264,12 @@ $(document).ready(function(){
           }));
         }
         placeMarker(crowdSourced, map);
-        //console.log(crowdSourced.length); 
       })
     } else {
       clearMarkers(crowdSourced);
       crowdSourced = [];
     }
     });
-
-
-
 
   // load the map
   google.maps.event.addDomListener(window, 'load', initialize);
