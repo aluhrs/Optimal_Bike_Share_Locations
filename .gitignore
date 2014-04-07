@@ -3,3 +3,5 @@ googe_maps_api_key.sh
 *.pyc
 parser.js
 *.db
+.DS_Store
+env
