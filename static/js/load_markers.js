@@ -1,5 +1,3 @@
-//TODO: update javascript getElementById with jquery 
-
 var map;
 function initialize() {
   //var marker;
@@ -24,11 +22,12 @@ function initialize() {
   var transitLayer = new google.maps.TransitLayer();
   transitLayer.setMap(map);
 
-  // var image = '/static/images/bikesharelogo.jpeg';
-  // var image = 'http://www.placekitten.com/32/32'; 
   var cs_image = '/static/images/rsz_baybike.png'
-  var image = '/static/images/icon.png'
-
+  var top_one = '/static/images/icon.png'
+  var top_ten = '/static/images/green_icon.png'
+  var rest = '/static/images/gray_icon.png'
+  var image = [];
+  image.push(top_one, top_ten, rest);
 
   var currStationList = []
   $.ajax({
@@ -47,37 +46,23 @@ function initialize() {
           title: stations[i]["stationName"],
           icon: cs_image
           });
-        //attachEventListener(list[i])
-        //});
-      //}
     }
-    
   });
-
-
 
   placePossibleStations(image);
   
   map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
-  //map.controls[google.maps.ControlPosition.RIGHT_TOP].push(intro);
-
-  //clickable(marker);
-
 }
 
 // Removes the Markers from the map
 function clearMarkers(list) {
-  //console.log("this should be displaying");
-  //console.log(list);
   placeMarker(list, null);
 }
 
 function attachEventListener(marker){
   google.maps.event.addListener(marker, 'click', function(){
-    //console.log(marker["title"] + " got clicked!");
-    //marker["title"] + <p> + "This spot has " + marker["clusters"] "in its cluster."
+    console.log(marker["title"] + " got clicked!");
     var message = "<b>" + "Ranked: " + marker["cluster_rank"] + "</b>" + "<p>" + "<p>" + "This spot has " + marker["cluster_length"] + " points in its cluster.";
-    //marker["title"] + " got clicked!"
     var infowindow = new google.maps.InfoWindow({
       content: message
     });
@@ -86,78 +71,97 @@ function attachEventListener(marker){
 }
 
 function placeMarker(list, theMap){
-  //console.log(list.length);
+  console.log(list.length);
+  console.log(theMap);
   for (var i=0; i<list.length; i++){
-    //console.log(list.length);
+    console.log(theMap);
     list[i].setMap(theMap);
     if (theMap != null){
+      console.log("this should be displaying");
       attachEventListener(list[i]);
     }
   }
 }
 
 var possibleStationsList = [];
-function placePossibleStations(image){
+function placePossibleStations(image)
+{
   // jquery and ajax to loop through the list of hot spots
   // and place the lat/longs on the map
-  if (possibleStationsList.length !== 0){
+  if (possibleStationsList.length !== 0)
+  {
     placeMarker(possibleStationsList, map);
   } else {
     $.ajax({
       url: "/ajax/possiblestations",
       dataType: "json"          
-    }).done(function(hotspots){
+    }).done(function(hotspots)
+    {
       var lat, lng, message, infowindow;
-      for (var i=0; i<hotspots.length; i++) {
-        //console.log(hotspots.length);
+      for (var i=0; i<hotspots.length; i++) 
+      {
+        id = hotspots[i]["id"];
         lat = hotspots[i]["latitude"];
         lng = hotspots[i]["longitude"];
         key = hotspots[i]["key"];
         cluster = hotspots[i]["cluster"];
         cluster_length = hotspots[i]["cluster_length"];
         cluster_rank = hotspots[i]["cluster_rank"];
-        possibleStationsList.push(new google.maps.Marker({
-          position: new google.maps.LatLng(lat,lng),
-          map: map,
-          title: "'" + key + "'",
-          icon: image,
-          cluster: cluster,
-          cluster_length: cluster_length,
-          cluster_rank: cluster_rank
-        })
-      );
+        if (cluster_rank == 1) 
+        {
+          possibleStationsList.push(new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            map: map,
+            title: "'" + key + "'",
+            icon: image[0],
+            cluster: cluster,
+            cluster_length: cluster_length,
+            cluster_rank: cluster_rank
+            }));
+        }
+        else if (cluster_rank > 1 && cluster_rank < 11)
+        {
+          possibleStationsList.push(new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            map: map,
+            title: "'" + key + "'",
+            icon: image[1],
+            cluster: cluster,
+            cluster_length: cluster_length,
+            cluster_rank: cluster_rank
+            }));
+        }
+        else 
+        {
+          possibleStationsList.push(new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            map: map,
+            title: "'" + key + "'",
+            icon: image[2],
+            cluster: cluster,
+            cluster_length: cluster_length,
+            cluster_rank: cluster_rank
+            }));
+        }
       }
-      console.log(possibleStationsList.length);
       placeMarker(possibleStationsList, map);     
-
     });
   }
 }
 
-// function clickable(marker) {
-//   var infowindow = new google.maps.InfoWindow({
-//     content: "Opitmal Bike Location"
-//   });
-//}
 
 var legend;
-
-//var intro;
-//var logo;
 
 var newPossibleStationsList = [];
 $(document).ready(function(){
   // cache the legend before the map wipes it from the DOM
   legend = document.getElementById("legend");
-  //intro = document.getElementById("intro");
-  //logo = document.getElementById("logo");
   $(".checkboxes input").click(function() {
     if($(".checkboxes input:checked").length) {
       var inputList = []
       for (var i=0; i<$(".checkboxes input:checked").length; i++) {
         inputList.push($(".checkboxes input:checked")[i]["value"]);
       }
-      console.log("this is the console.log: " + inputList);
       clearMarkers(possibleStationsList);
       $.ajax({
         url: "/ajax/legend",
@@ -166,8 +170,10 @@ $(document).ready(function(){
         dataType: "json",
         contentType: "application/json"
       }).done(function(hotspots) {
-        var lat, lng;
-        var image = '/static/images/icon.png';
+        var lat, lng, cluster, cluster_length, cluster_rank;
+        var top_one = '/static/images/icon.png'
+        var top_ten = '/static/images/green_icon.png'
+        var rest = '/static/images/gray_icon.png'
         clearMarkers(newPossibleStationsList);
         newPossibleStationsList = []
         for (var i=0; i<hotspots.length; i++) {
@@ -178,23 +184,53 @@ $(document).ready(function(){
           cluster_length = hotspots[i]["cluster_length"];
           cluster_rank = hotspots[i]["cluster_rank"];
           //console.log(lat, lng, key, cluster, cluster_length, cluster_rank)
+          if (cluster_rank == 1) 
+        {
+          //console.log("this is the top one" + lat,lng, top_one);
           newPossibleStationsList.push(new google.maps.Marker({
             position: new google.maps.LatLng(lat,lng),
             map: map,
             title: "'" + key + "'",
-            icon: image,
+            icon: top_one,
             cluster: cluster,
             cluster_length: cluster_length,
             cluster_rank: cluster_rank
-          }));
+            }));
         }
-        //console.log(newPossibleStationsList.length);
-        placeMarker(newPossibleStationsList, map); 
+        else if (cluster_rank > 1 && cluster_rank < 11)
+        {
+          newPossibleStationsList.push(new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            map: map,
+            title: "'" + key + "'",
+            icon: top_ten,
+            cluster: cluster,
+            cluster_length: cluster_length,
+            cluster_rank: cluster_rank
+            }));
+        }
+        else 
+        {
+          newPossibleStationsList.push(new google.maps.Marker({
+            position: new google.maps.LatLng(lat,lng),
+            map: map,
+            title: "'" + key + "'",
+            icon: rest,
+            cluster: cluster,
+            cluster_length: cluster_length,
+            cluster_rank: cluster_rank
+            }));
+        }
+        }
+        placeMarker(newPossibleStationsList, map);
       })
-    } else {
+    } 
+    else 
+    {
       clearMarkers(newPossibleStationsList);
       placeMarker(possibleStationsList, map);
-      if (newPossibleStationsList != []) {
+      if (newPossibleStationsList != []) 
+      {
         newPossibleStationsList = []
       }
     }
@@ -206,7 +242,7 @@ $(document).ready(function(){
       $.ajax({
         url: "/ajax/allcrowdsourced",
         dataType: "json"
-      }).done(function(data) {
+      }).done(function(data){
         var id, lat, lng;
         for (var i=0; i<data.length; i++) {
           id = data[i]["id"]

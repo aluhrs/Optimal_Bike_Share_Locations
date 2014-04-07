@@ -1,0 +1,15 @@
+html { height: 100% }
+body { height: 100%; margin: 0; padding: 0; background: #0070CD !important;}
+#curr { float: left; padding-right: 10px }
+#footer { background: #0070CD; color: white;   position:fixed; left:0px; bottom:0px; height:30px; width:100%; }
+#footer_left { padding: 5px 10px; float: left; }
+#footer_right { padding: 5px 10px; float: right;}
+.nav_bar { background: #4B4B4B; color: white; padding: 5px 0 5px 100px; }
+#map-canvas { height: 80%; width: 100%;}
+#legend { background: white; padding: 10px; margin: 10px; border: 3px solid #000; z-index: 100; display: none;}
+#intro { background: #0070CD; color: white; padding: 4px; z-index: 100; }
+h3,p { padding: 0; margin: 0; }
+#id { background: white;}
+#logo { float: left; padding: 0 0 0 56px;}
+#top_one_icon { float: left; padding: 0 0 0 10px; }
+#top_ten_icon { float: left; padding: 0 10px 0 10px; }
