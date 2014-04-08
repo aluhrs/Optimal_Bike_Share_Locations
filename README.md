@@ -1,4 +1,4 @@
-##Optimal Locations for New Bay Area Bike Share Stations
+###Optimal Locations for New Bay Area Bike Share Stations
 ####Website: http://optimalbikeshare.herokuapp.com/
 
 
