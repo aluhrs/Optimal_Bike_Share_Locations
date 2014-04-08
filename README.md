@@ -10,7 +10,7 @@ They are planning on expanding the program and create more stations around the c
 
 ![http://sfbikeshare.sfmta.com)](https://raw.githubusercontent.com/aluhrs/Optimal_Bike_Share_Locations/master/images/crowdsourcing.png)
 
-For my project, I decided I want to help them decide where to put new stations. I scraped the data from the crowdsourcing website, and I used the kmeans clusering algorithm to determine new locations. 
+For my project, I decided I want to help them decide where to put new stations. I scraped the data from the crowdsourcing website, and I used the kmeans clustering algorithm to determine new locations. 
 
 ###Kmeans Clustering:
 Given a dataset and the number of clusters desired, the data is partitioned into clusters and a single spot is created to represent each cluster.
@@ -25,7 +25,7 @@ In addition to crowdsourced data, I've also included the ability for the user to
 4. Proximity to transportation such as Train Stations, Subway Stations, or Bus Stations
 5. Proximity to other points of interest such as Parks, Shopping Malls, Movie Theaters, or Home Good Stores
 
-The user can select any individual option or any combination of options to determine 30 optimal locations.
+The user can select any individual option or any combination of options to determine 100 optimal locations.
 
 ![elevation](https://raw.githubusercontent.com/aluhrs/Optimal_Bike_Share_Locations/master/images/elevation_1.png)
 ![all_options](https://raw.githubusercontent.com/aluhrs/Optimal_Bike_Share_Locations/master/images/all_options_1.png)
@@ -34,13 +34,13 @@ The user can select any individual option or any combination of options to deter
 I set up my postgres (http://postgresapp.com/) database with three tables - the current stations, the data from the crowd sourcing website, and the optimized locations created from the clustering algorithm. Using Google Maps Elevation and Places API, I pulled elevation and points of interest data for each crowd sourced point. 
 
 ###Ranking Points:
-If a single point has a similiar elevation to its surrounding points, the point would be ranked higher. I ranked a point higher if it located within a certain distance to either grocery stores, transportation, restaurants, parks, movie theaters, or shopping malls.
+If a single point has similiar elevation to its surrounding points, the point would be ranked higher. I also ranked a point higher if it located within a certain distance to either grocery stores, transportation, restaurants, parks, movie theaters, or shopping malls.
 
 ###User Experience:
 To create the fastest speeds and the best user experience, I ran all of the calculations beforehand. The optimal locations data is flagged with keys in the database, such as 'e' for elevation. For scalability, caching optimizations could be made.
 
 ###Possible Improvements:
-I could improve my app by adding additional options such as crime or proximity to bike friendly routes. A more expansive improvement would be dynamically pulling updated votes on the crowd sourcing webpage. A new vote would update my database, which would then the recalculate the optimal locations. 
+I could improve my app by adding additional options such as crime or proximity to bike friendly routes. A more expansive improvement would be dynamically pulling newly created votes on the crowd sourcing webpage. A new vote would update my database, which would then the recalculate the optimal locations. 
 
 ###Technologies Used:
 1. Python/Javascript/jQuery/HTML/CSS/JSON/ajax
