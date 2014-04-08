@@ -43,9 +43,10 @@ To create the fastest speeds and the best user experience, I ran all of the calc
 I could improve my app by adding additional options such as crime or proximity to bike friendly routes. A more expansive improvement would be dynamically pulling updated votes on the crowd sourcing webpage. A new vote would update my database, which would then the recalculate the optimal locations. 
 
 ###Technologies Used:
-1. Python/Javascript/jQuery/HTML/CSS
+1. Python/Javascript/jQuery/HTML/CSS/JSON/ajax
 2. Flask
 3. Postgres
-4. Google Maps API
+4. Google Maps API - Elevation and Places
 5. Beautiful Soup - Web Scraper
-6. Scipy and Numpy for Kmeans Clustering
+6. Scipy and Numpy - Kmeans Clustering Algorithm
+7. Deployed on Heroku and Monitored with New Relic
