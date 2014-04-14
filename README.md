@@ -12,7 +12,7 @@ They are planning on expanding the program and create more stations around the c
 
 For my project, I decided I wanted to help them decide where to put new stations. I scraped the data from the crowdsourcing website, and I used the kmeans clustering algorithm to determine new locations. 
 
-###Kmeans Clustering:
+###K-means Clustering:
 Given a dataset and the number of clusters desired, the data is partitioned into clusters and a single spot is created to represent each cluster.
 
 ![landing_page](https://raw.githubusercontent.com/aluhrs/Optimal_Bike_Share_Locations/master/images/cs_landing.png)
@@ -48,5 +48,5 @@ I could improve my app by adding additional options such as crime or proximity t
 3. Postgres
 4. Google Maps API - Elevation and Places
 5. Beautiful Soup - Web Scraper
-6. Scipy and Numpy - Kmeans Clustering Algorithm
+6. Scipy and Numpy - k-means Clustering Algorithm
 7. Deployed on Heroku and Monitored with New Relic
