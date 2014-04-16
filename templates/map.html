@@ -4,7 +4,26 @@
     <title>Bike Share!</title>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
     <link rel="stylesheet" type="text/css" href="/static/css/bikesharemap.css">
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{gkey}}&sensor=false">
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key={{gkey}}&sensor=false"></script>
+    <script type="text/javascript">
+      var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
+
+      // Configure the Keen object with your Project ID and (optional) access keys.
+      Keen.configure({
+          projectId: "53432b2ed97b85610e00003e",
+          writeKey: "58cf34f55c8051229ea9ef464071a39f26387c5cd2508abd9ed20a0e382ed78998b96dd29b66a83485a4c946458610f183404f4bb7b7253020876abe1a2207df63934a4e25367d2066ed111b767f4bc78ccca8c82f337ada6f41405b39c9994bcb3a485637b1e49559e766e005389ad1", // 
+          readKey: "f0099048dd5cf39ee0e42e7afd17ee7351a856d47553501a61f06f3601a8f834bed9a8a1009073ba32a1efdfd8ff6ee70aaf68e6def7c9b7706fa312d6e91a6e8d40f09a44ed898496168ad8b6e5526daba3736df56bd19e46ed5e21c666667231eae511e8c9ad456611e87fc516aa1c"    // 
+      });
+      var pageView = function() {
+      return {
+          page: window.location.href,
+          time: new Date().toISOString(),
+          referrer: document.referrer,
+          agent: window.navigator.userAgent
+        };
+      };
+
+      Keen.addEvent('pageView', pageView());
     </script>
     <!-- pull in the jquery library -->
     <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
@@ -23,7 +42,7 @@
       <div id="content">
       <h3>Find Optimal Bike Share Locations!</h3>
       <p>
-        Currently, <a style="color: #84C8BF" href="http://bayareabikeshare.com/" target="_blank">Bay Area Bike Share</a> only has <a style="color: #84C8BF" href="http://www.bayareabikeshare.com/stations">35 stations</a> in San Francisco, and the stations are only located in the Financial District and SOMA area. My project suggests 100 optimal bike share locations based on a <a style="color: #84C8BF" href="http://sfbikeshare.sfmta.com/" target="_blank">crowdsourcing website.</a> I've also included the ability for the user to choose locations based on other criteria such as elevation or proximity to transportation. You can select any individual option or any combination of options to determine 100 optimal locations.
+        Currently, <a style="color: #84C8BF" href="http://bayareabikeshare.com/" target="_blank">Bay Area Bike Share</a> only has <a style="color: #84C8BF" href="http://www.bayareabikeshare.com/stations" target="_blank">35 stations</a> in San Francisco, and the stations are only located in the Financial District and SOMA area. My project suggests 100 optimal bike share locations based on a <a style="color: #84C8BF" href="http://sfbikeshare.sfmta.com/" target="_blank">crowdsourcing website.</a> I've also included the ability for the user to choose locations based on other criteria such as elevation or proximity to transportation. You can select any individual option or any combination of options to determine 100 optimal locations.
       </p>
       </div>
     </div>
