@@ -4,9 +4,9 @@ import model
 
 def get_crowd_sourced_from_db():
 	"""query database for the crowd_sourced data"""
-	#the_app = model.Crowd_Sourced()
+	#the_app = model.CrowdSourced()
 	#crowd_sourced_points = the_app.to_dict()
-	crowd_sourced_points = model.session.query(model.Crowd_Sourced).all()
+	crowd_sourced_points = model.session.query(model.CrowdSourced).all()
 	cs = list_lat_lngs(crowd_sourced_points)
 	return cs
 
@@ -14,8 +14,8 @@ def get_crowd_sourced_from_db():
 
 def get_current_stations_from_db():
 	"""query database for possible_stations data"""
-	curr_stations = model.session.query(model.Current_Station).all()
-	#the_app = model.Current_Station()
+	curr_stations = model.session.query(model.CurrentStation).all()
+	#the_app = model.CurrentStation()
 	#curr_stations = the_app.to_dict()
 	ps = list_lat_lngs(curr_stations)
 	return ps
@@ -48,7 +48,7 @@ def identify_points_near_curr_stations(cs, ps):
 			lat_j = j[1]
 			lng_j = j[2]
 			if lat_j < high_lat_i and lat_j > low_lat_i and lng_j < high_lng_i and lng_j > low_lng_i:
-				to_be_del = model.session.query(model.Crowd_Sourced).filter_by(id=i[0]).one()
+				to_be_del = model.session.query(model.CrowdSourced).filter_by(id=i[0]).one()
 				model.session.delete(to_be_del)
 				to_delete.append(i)
 

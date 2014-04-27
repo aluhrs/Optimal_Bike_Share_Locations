@@ -15,7 +15,7 @@ import model
 import os
 import urllib2
 
-points = model.session.query(model.Crowd_Sourced).all()
+points = model.session.query(model.CrowdSourced).all()
 
 
 def get_location(points):
@@ -32,7 +32,7 @@ def get_location(points):
 					elevation_data = get_elevation(url)
 					elevation = parse(elevation_data)
 					#update_elevation(elevation_data)
-					curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
+					curr = model.session.query(model.CrowdSourced).filter_by(id=id).one()
 					curr.elevation = float(elevation)
 					model.session.add(curr)
 					elevations.append(elevation)
@@ -135,7 +135,7 @@ def send_to_db_elevation(dictionary):
 			# add 1 to the vote data in the db
 			# add elevation as a reason
 			id = d
-			upvote = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
+			upvote = model.session.query(model.CrowdSourced).filter_by(id=id).one()
 			#upvote.votes += 1
 			upvote.elevation_reason = True
 			model.session.add(upvote)
@@ -145,7 +145,7 @@ def send_to_db_elevation(dictionary):
 	print "All of the points have been added to the db as elevation_reason."
 
 def update_elevation():
-	the_app = model.Crowd_Sourced()
+	the_app = model.CrowdSourced()
 	all_elevation = the_app.to_dict()
 	#print all_elevation
 	# for each point, get the elevation, and check for the elevation of 

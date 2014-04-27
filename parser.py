@@ -193,7 +193,7 @@ def add_to_database(converted_kmeans):
 		cluster = converted_kmeans[x][3]
 		cluster_rank = x + 1
 		key = 'c'
-		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key, cluster=cluster, 
+		new_point = model.PossibleStation(latitude=lat, longitude=lng, key=key, cluster=cluster, 
 										cluster_length=cluster_length, cluster_rank=cluster_rank)
 		model.session.add(new_point)
 		print "Point: %r, %r, Key: %r, Cluster %r, Cluster Rank: %r, Cluster Length: %r" % (lat, lng, key, cluster, cluster_rank, cluster_length)
@@ -210,7 +210,7 @@ def add_to_database(converted_kmeans):
 	# 	cluster = converted_kmeans[x]['cluster']
 	# 	#cluster_rank = converted_kmeans[x] + 1
 	# 	key = 'c'
-	# 	new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key, cluster=cluster, 
+	# 	new_point = model.PossibleStation(latitude=lat, longitude=lng, key=key, cluster=cluster, 
 	# 										cluster_length=cluster_length, cluster_rank=cluster_rank)
 	# 	model.session.add(new_point)
 	# 	print "Point: %r, %r, Key: %r, Cluster %r, Cluster Length: %r" % (lat, lng, key, cluster, cluster_length)
@@ -234,7 +234,7 @@ def main():
 		converted_kmeans = convert_kmeans_to_list(hot_spots)
 		create_file(converted_kmeans)
 	else:
-		all_data = model.session.query(model.Crowd_Sourced).all()
+		all_data = model.session.query(model.CrowdSourced).all()
 		db_lat_lng = upvote(all_data)
 		hot_spots = kmeans(db_lat_lng)
 		converted_kmeans = kmeans_array_length(hot_spots)

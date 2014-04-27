@@ -16,7 +16,7 @@ session = scoped_session(sessionmaker(bind=engine,
 Base = declarative_base()
 Base.query = session.query_property()
 
-class Current_Station(Base):
+class CurrentStation(Base):
 	"""This table contains all information for the current bike share stations"""
 	__tablename__ = "current_stations"
 	id = Column(Integer, primary_key=True)
@@ -28,21 +28,31 @@ class Current_Station(Base):
 
 
 	def to_dict(self):
-		stations = session.query(Current_Station).all()
-		ret = []
-		for s in stations:
-			d = {}
-			d["id"] = int(s.id)
-			d["latitude"] = float(s.latitude)
-			d["longitude"] = float(s.longitude)
-			d["city"] = s.city
-			d["stationName"] = s.station_name
-			ret.append(d)
-
-		return ret
+		output_dict = {}
 
 
-class Crowd_Sourced(Base):
+		output_dict["id"] = self.id
+		output_dict["latitude"] = float(self.latitude)
+		output_dict["longitude"] = float(self.longitude)
+		output_dict["city"] = self.city
+		output_dict["stationName"] = self.station_name
+
+
+		# # stations = session.query(CurrentStation).all()
+		# ret = []
+		# for s in stations:
+		# 	d = {}
+		# 	d["id"] = int(s.id)
+		# 	d["latitude"] = float(s.latitude)
+		# 	d["longitude"] = float(s.longitude)
+		# 	d["city"] = s.city
+		# 	d["stationName"] = s.station_name
+		# 	ret.append(d)
+
+		return output_dict
+
+
+class CrowdSourced(Base):
 	"""This table contains all the data scraped from the crowd sourced
 	website: http://sfbikeshare.sfmta.com/. Additionally, it houses all
 	the reasons for upvoting a location"""
@@ -63,7 +73,7 @@ class Crowd_Sourced(Base):
 
 
 	def to_dict(self):
-		stations = session.query(Crowd_Sourced).all()
+		stations = session.query(CrowdSourced).all()
 		ret = []
 		for s in stations:
 			d = {}
@@ -90,7 +100,7 @@ class Crowd_Sourced(Base):
 
 
 	def get_elevation(self):
-		stations = session.query(Crowd_Sourced).order_by(Crowd_Sourced.latitude, Crowd_Sourced.longitude).all()
+		stations = session.query(CrowdSourced).order_by(CrowdSourced.latitude, CrowdSourced.longitude).all()
 		ret = []
 		for s in stations:
 			if s.elevation is not None:
@@ -106,7 +116,7 @@ class Crowd_Sourced(Base):
 		return ret
 
 
-class Possible_Station(Base):
+class PossibleStation(Base):
 	"""This table contains the optimized locations for each key
 	based on the kmeans clustering algorithm."""
 	__tablename__ = "possible_stations"
@@ -120,7 +130,7 @@ class Possible_Station(Base):
 	cluster_rank = Column(Integer, nullable=True)
 
 	def to_dict(self):
-		stations = session.query(Possible_Station).all()
+		stations = session.query(PossibleStation).all()
 		ret = []
 		for s in stations:
 			d = {}

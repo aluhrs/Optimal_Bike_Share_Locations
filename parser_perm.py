@@ -56,7 +56,7 @@ def create_file(hotspots):
 	print "Your file hot_spots.txt has been created."
 
 def query_db():
-	the_app = model.Crowd_Sourced()
+	the_app = model.CrowdSourced()
 	db_data = the_app.to_dict()
 	return db_data
 
@@ -87,7 +87,7 @@ def add_to_database(converted_kmeans):
 		cluster = converted_kmeans[x][3]
 		cluster_rank = x + 1
 		key = 'c'
-		new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key, cluster=cluster, 
+		new_point = model.PossibleStation(latitude=lat, longitude=lng, key=key, cluster=cluster, 
 										cluster_length=cluster_length, cluster_rank=cluster_rank)
 		model.session.add(new_point)
 		print "Point: %r, %r, Key: %r, Cluster %r, Cluster Rank: %r, Cluster Length: %r" % (lat, lng, key, cluster, cluster_rank, cluster_length)
@@ -122,7 +122,7 @@ def upvote_crowd_sourced():
 		lat = converted_kmeans[x]['lat']
 		lng = converted_kmeans[x]['lng']
 		cluster = converted_kmeans[x]['num_in_cluster']
-		#new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key, num_in_clusters=cluster)
+		#new_point = model.PossibleStation(latitude=lat, longitude=lng, key=key, num_in_clusters=cluster)
 		#model.session.add(new_point)
 		print "A point with lat: %r, lng: %r, key: %r, and cluster length of %r has been added to the database." % (lat, lng, key, cluster)
 
@@ -196,12 +196,12 @@ def upvote_reasons():
 			cluster = ranked[i][3]
 			cluster_rank = i + 1
 			key = k
-			new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key, cluster=cluster, 
+			new_point = model.PossibleStation(latitude=lat, longitude=lng, key=key, cluster=cluster, 
 										cluster_length=cluster_length, cluster_rank=cluster_rank)
 			model.session.add(new_point)
 			print "Point: %r, %r, Key: %r, Cluster %r, Cluster Rank: %r, Cluster Length: %r" % (lat, lng, key, cluster, cluster_rank, cluster_length)
 
-			#new_point = model.Possible_Station(latitude=lat, longitude=lng, key=key)
+			#new_point = model.PossibleStation(latitude=lat, longitude=lng, key=key)
 			#model.session.add(new_point)
 			#print "%r, %r with key: %r has been added to the database." % (lat, lng, key)
 

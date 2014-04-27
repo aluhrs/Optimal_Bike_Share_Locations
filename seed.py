@@ -14,7 +14,7 @@ def load_current_stations(session):
 				latitude = float(station["latitude"])
 				longitude = float(station["longitude"])
 				city = station["city"]
-				curr = model.Current_Station(station_name=station_name, total_docks=total_docks, 
+				curr = model.CurrentStation(station_name=station_name, total_docks=total_docks, 
 												latitude=latitude, longitude=longitude, city=city)
 				session.add(curr)
 		session.commit()
@@ -31,7 +31,7 @@ def load_crowd_sourced_data(session):
 			longitude = float(location["longitude"])
 			votes = int(location["votes"])
 			name = location["name"]
-			crowd = model.Crowd_Sourced(latitude=latitude, longitude=longitude, votes=votes, 
+			crowd = model.CrowdSourced(latitude=latitude, longitude=longitude, votes=votes, 
 											name=name, crowd_sourced_reason=True)
 			session.add(crowd)
 		session.commit()
@@ -40,7 +40,7 @@ def load_crowd_sourced_data(session):
 
 def load_possible_stations(session):
 	"""Load the optimal bike share locations based on crowdsourced data."""
-	#the_app = model.Crowd_Sourced()
+	#the_app = model.CrowdSourced()
 	#all_data = the_app.to_dict()
 	with open("./static/hot_spots.txt") as f:
 		hot_spots = json.loads(f.read())
@@ -52,7 +52,7 @@ def load_possible_stations(session):
 			longitude = float(spot["lng"])
 			cluster = int(spot["num_in_cluster"])
 			key = 'c'
-			hotspot = model.Possible_Station(latitude=latitude, longitude=longitude, key=key, num_in_clusters=cluster)
+			hotspot = model.PossibleStation(latitude=latitude, longitude=longitude, key=key, num_in_clusters=cluster)
 			session.add(hotspot)
 		session.commit()
 		print "The Possible Stations have been added to the database."
@@ -92,7 +92,7 @@ def main(session):
 	cs = distancefromCS.get_crowd_sourced_from_db()
 	ps = distancefromCS.get_current_stations_from_db()
 	distancefromCS.identify_points_near_curr_stations(cs, ps)
-	points = model.session.query(model.Crowd_Sourced).all()
+	points = model.session.query(model.CrowdSourced).all()
 	parser.upvote(points)
 	load_possible_stations(session)
 

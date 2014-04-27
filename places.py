@@ -6,7 +6,7 @@ import urllib2
 import json
 import config
 
-points = model.session.query(model.Crowd_Sourced).all()
+points = model.session.query(model.CrowdSourced).all()
 
 # encode the url
 def get_location(points):
@@ -16,7 +16,7 @@ def get_location(points):
 			if len(locations_list) < 995:
 				if points[i].grocery_reason == None and points[i].transportation_reason == None and points[i].food_reason == None and points[i].other_poi_reason == None:
 					id = points[i].id
-					curr = model.session.query(model.Crowd_Sourced).filter_by(id=id).one()
+					curr = model.session.query(model.CrowdSourced).filter_by(id=id).one()
 					latitude = points[i].latitude
 					longitude = points[i].longitude				
 					url = build_url(latitude, longitude)

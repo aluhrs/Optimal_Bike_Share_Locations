@@ -17,24 +17,33 @@ def load_map():
 @app.route("/ajax/allcrowdsourced")
 def all_crowdsourced():
 	"""Pull all the source data from the crowd_sourced table"""
-	the_app = model.Crowd_Sourced()
+	the_app = model.CrowdSourced()
 	ret = the_app.to_dict()
 
 
 	return json.dumps(ret)
+
+def get_all_stations_as_dict():
+	pass
 
 @app.route("/ajax/currentstations")
 def current_stations():
 	"""Pull all of the current bike share stations from the current_stations table"""
-	the_app = model.Current_Station()
-	ret = the_app.to_dict()
-	return json.dumps(ret)
+	stations = model.session.query(model.CurrentStation).all()
+
+	station_dicts = []
+	for s in stations:
+		station_dicts.append(s.to_dict())
+
+	# the_app = model.CurrentStation()
+	# ret = the_app.to_dict()
+	return json.dumps(station_dicts)
 
 @app.route("/ajax/possiblestations")
 def possible_stations():
 	"""Pull all of the possible stations based solely on the crowd_sourced information
 	from the possible_stations table"""
-	the_app = model.Possible_Station()
+	the_app = model.PossibleStation()
 	crowd_sourced_hs = the_app.to_dict()
 	ret = []
 	for i in crowd_sourced_hs:
@@ -47,7 +56,7 @@ def possible_stations():
 def toggle_checkboxes():
 	"""Pull the possible stations from possible_stations table that's been flagged
 	for the checkbox(es) that have been checked"""
-	the_app = model.Possible_Station()
+	the_app = model.PossibleStation()
 	db_data = the_app.to_dict()
 
 	list_args = request.args.getlist("li[]")
@@ -55,7 +64,7 @@ def toggle_checkboxes():
 	key = ''.join(s_list_args)
 
 	ret = []
-	query = model.session.query(model.Possible_Station).filter_by(key=key).all()
+	query = model.session.query(model.PossibleStation).filter_by(key=key).all()
 	for q in range(len(query)):
 		d = {}
 		d["latitude"] = float(query[q].latitude)
