@@ -63,13 +63,11 @@ class CrowdSourced(Base):
 	other_poi_reason = Column(Boolean, nullable=True)
 	
 
-
 	def to_dict(self):
 		"""Adds all of the CrowdSourced columns to a dictionary, so the data
 		can be easily formatted in the router.py"""
 
 		output_dict = {}
-
 
 		output_dict["id"] = self.id
 		output_dict["latitude"] = float(self.latitude)
@@ -103,6 +101,7 @@ class PossibleStation(Base):
 	cluster = Column(Integer, nullable=True)
 	cluster_length = Column(Integer, nullable=True)
 	cluster_rank = Column(Integer, nullable=True)
+
 
 	def to_dict(self):
 		"""Adds all of the PossibleStation columns to a dictionary, so the data
