@@ -3,9 +3,9 @@ from datetime import datetime
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, ForeignKey
-from sqlalchemy import Column, Integer, String, DateTime, Text, Numeric, Boolean
+from sqlalchemy import Boolean, Column, DateTime, Integer, Numeric, String, Text
 
-from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
+from sqlalchemy.orm import backref, sessionmaker, scoped_session, relationship
 
 
 engine = create_engine(config.DB_URI, echo=False)
@@ -18,6 +18,7 @@ Base.query = session.query_property()
 
 class CurrentStation(Base):
 	"""This table contains all information for the current bike share stations"""
+
 	__tablename__ = "current_stations"
 	id = Column(Integer, primary_key=True)
 	station_name = Column(String(100), nullable=False)
@@ -28,26 +29,16 @@ class CurrentStation(Base):
 
 
 	def to_dict(self):
-		output_dict = {}
+		"""Adds all of the CurrentStation columns to a dictionary, so the data
+		can be easily formatted in the router.py"""
 
+		output_dict = {}
 
 		output_dict["id"] = self.id
 		output_dict["latitude"] = float(self.latitude)
 		output_dict["longitude"] = float(self.longitude)
 		output_dict["city"] = self.city
 		output_dict["stationName"] = self.station_name
-
-
-		# # stations = session.query(CurrentStation).all()
-		# ret = []
-		# for s in stations:
-		# 	d = {}
-		# 	d["id"] = int(s.id)
-		# 	d["latitude"] = float(s.latitude)
-		# 	d["longitude"] = float(s.longitude)
-		# 	d["city"] = s.city
-		# 	d["stationName"] = s.station_name
-		# 	ret.append(d)
 
 		return output_dict
 
@@ -56,6 +47,7 @@ class CrowdSourced(Base):
 	"""This table contains all the data scraped from the crowd sourced
 	website: http://sfbikeshare.sfmta.com/. Additionally, it houses all
 	the reasons for upvoting a location"""
+
 	__tablename__ = "crowd_sourced"
 	id = Column(Integer, primary_key=True)
 	latitude = Column(Numeric(11,8), nullable=False)
@@ -73,47 +65,30 @@ class CrowdSourced(Base):
 
 
 	def to_dict(self):
-		stations = session.query(CrowdSourced).all()
-		ret = []
-		for s in stations:
-			d = {}
-			d["id"] = int(s.id)
-			d["latitude"] = float(s.latitude)
-			d["longitude"] = float(s.longitude)
-			d["votes"] = int(s.votes)
-			if s.elevation:
-				d["elevation"] = float(s.elevation)
-			if s.elevation_reason:
-				d["elevation_reason"] = s.elevation_reason
-			if s.grocery_reason:
-				d["grocery_reason"] = s.grocery_reason
-			if s.transportation_reason:
-				d["transportation_reason"] = s.transportation_reason
-			if s.food_reason:
-				d["food_reason"] = s.food_reason
-			if s.other_poi_reason:
-				d["other_poi_reason"] = s.other_poi_reason
+		"""Adds all of the CrowdSourced columns to a dictionary, so the data
+		can be easily formatted in the router.py"""
 
-			ret.append(d)
-
-		return ret
+		output_dict = {}
 
 
-	def get_elevation(self):
-		stations = session.query(CrowdSourced).order_by(CrowdSourced.latitude, CrowdSourced.longitude).all()
-		ret = []
-		for s in stations:
-			if s.elevation is not None:
-				d = {}
-				d["id"] = int(s.id)
-				d["latitude"] = float(s.latitude)
-				d["longitude"] = float(s.longitude)
-				d["votes"] = int(s.votes)
-				d["elevation"] = float(s.elevation)
+		output_dict["id"] = self.id
+		output_dict["latitude"] = float(self.latitude)
+		output_dict["longitude"] = float(self.longitude)
+		output_dict["votes"] = int(self.votes)
+		if self.elevation:
+				output_dict["elevation"] = float(self.elevation)
+		if self.elevation_reason:
+			output_dict["elevation_reason"] = self.elevation_reason
+		if self.grocery_reason:
+			output_dict["grocery_reason"] = self.grocery_reason
+		if self.transportation_reason:
+			output_dict["transportation_reason"] = self.transportation_reason
+		if self.food_reason:
+			output_dict["food_reason"] = self.food_reason
+		if self.other_poi_reason:
+			output_dict["other_poi_reason"] = self.other_poi_reason
 
-				ret.append(d)
-
-		return ret
+		return output_dict
 
 
 class PossibleStation(Base):
@@ -130,20 +105,20 @@ class PossibleStation(Base):
 	cluster_rank = Column(Integer, nullable=True)
 
 	def to_dict(self):
-		stations = session.query(PossibleStation).all()
-		ret = []
-		for s in stations:
-			d = {}
-			d["id"] = int(s.id)
-			d["latitude"] = float(s.latitude)
-			d["longitude"] = float(s.longitude)
-			d["key"] = s.key
-			d["cluster"] = int(s.cluster)
-			d["cluster_length"] = int(s.cluster_length)
-			d["cluster_rank"] = int(s.cluster_rank)
-			ret.append(d)
+		"""Adds all of the PossibleStation columns to a dictionary, so the data
+		can be easily formatted in the router.py"""
 
-		return ret
+		output_dict = {}
+
+		output_dict["id"] = self.id
+		output_dict["latitude"] = float(self.latitude)
+		output_dict["longitude"] = float(self.longitude)
+		output_dict["key"] = self.key
+		output_dict["cluster"] = int(self.cluster)
+		output_dict["cluster_length"] = int(self.cluster_length)
+		output_dict["cluster_rank"] = int(self.cluster_rank)
+
+		return output_dict
 
 
 def create_tables():
