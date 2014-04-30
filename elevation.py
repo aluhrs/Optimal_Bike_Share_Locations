@@ -20,18 +20,21 @@ points = model.session.query(model.CrowdSourced).all()
 
 def get_location(points):
 	"""Encode the url"""
+
 	elevations = []
 	
-	for i in range(len(points)):
-			if points[i].elevation == None:
+	for point in range(len(points)):
+			if points[point].elevation == None:
 				if len(elevations) < 300:
-					id = points[i].id
-					latitude = points[i].latitude
-					longitude = points[i].longitude				
-					url = build_url(latitude, longitude)
-					elevation_data = get_elevation(url)
-					elevation = parse(elevation_data)
-					#update_elevation(elevation_data)
+					# TODO - verify this will work 
+					# get_elevation_from_GMAPI(points[point])
+					# id = points[point].id
+					# latitude = points[point].latitude
+					# longitude = points[point].longitude				
+					# url = build_url(latitude, longitude)
+					# elevation_data = get_elevation(url)
+					# elevation = parse(elevation_data)
+					# TODO - see if this is till needed here - update_elevation(elevation_data)
 					curr = model.session.query(model.CrowdSourced).filter_by(id=id).one()
 					curr.elevation = float(elevation)
 					model.session.add(curr)
@@ -42,8 +45,23 @@ def get_location(points):
 	print "The elevations have been added to the database"
 
 
+def get_elevation_from_GMAPI(point):
+	"""Builds the url needed to hit Google Maps API, reads the response from 
+	Google Maps API and returns the elevation"""
+
+	id = point.id
+	latitude = point.latitude
+	longitude = point.longitude				
+	url = build_url(latitude, longitude)
+	elevation_data = get_elevation(url)
+	elevation = parse(elevation_data)
+
+	return elevation
+
+
 def build_url(latitude, longitude):
 	"""Use urllib2 to open the url"""
+
 	locations = str(latitude) + "," + str(longitude)
 	url = "https://maps.googleapis.com/maps/api/elevation/json?locations=%s&sensor=false&key="+config.GOOGLE_API_KEY
 	return url % locations
@@ -51,23 +69,32 @@ def build_url(latitude, longitude):
 
 def get_elevation(url):
 	"""Get elevation for each point from Google Maps API"""
+
 	response = urllib2.urlopen(url)
 	json_data = json.loads(response.read())
 
 	return json_data
 
+
 def parse(json_data):
+	"""Returns the elevation"""
+
 	return json_data["results"][0]["elevation"]
 
+
 def create_file(data):
+	"""Creates a file and writes the Google Maps API Places data to it"""
+
 	new_file = open("./static/elevation.txt", 'w')
 	new_file.write(json.dumps(data))
 	new_file.close()
 
 	print "Your file elevation.txt has been created."
 
+
 def calc_rise(dictionary):
-	"""Get the difference between the lowest and the highest. This is in meters."""
+	"""Get the difference between the lowest and the highest. This is in meters"""
+
 	for d in dictionary:
 
 		if dictionary[d]["dictel"]["el"] != []:
@@ -83,6 +110,7 @@ def calc_rise(dictionary):
 
 def calc_run(dictionary):
 	"""Calculates the distance bewteen points"""
+
 	for d in dictionary:
 		if dictionary[d]["dictel"]["el"] > 0:
 			lat1 = dictionary[d]["lat_o"]
@@ -118,8 +146,10 @@ def calc_run(dictionary):
 
 	return dictionary
 
+
 def calc_elevation_grade(dictionary):
-	"""calculte the elevation incline by dividing the rise by the run"""
+	"""Calculte the elevation incline by dividing the rise by the run"""
+
 	for d in dictionary:
 		if dictionary[d]["eldiff"] != 0 and dictionary[d]["dictel"]["el"] > 0:
 			dictionary[d]["eldiffpercent"] = (dictionary[d]["eldiff"]/dictionary[d]["distance"]) * 100
@@ -128,23 +158,27 @@ def calc_elevation_grade(dictionary):
 
 	return dictionary
 
+
 def send_to_db_elevation(dictionary):
-	"""send the information back to the database with the updated elevation reason"""
+	"""If the difference in Elevation is less than 5%, update 
+	elevation_reason as True"""
+
 	for d in dictionary:
 		if dictionary[d]["eldiffpercent"] < 5:
-			# add 1 to the vote data in the db
-			# add elevation as a reason
 			id = d
 			upvote = model.session.query(model.CrowdSourced).filter_by(id=id).one()
-			#upvote.votes += 1
 			upvote.elevation_reason = True
 			model.session.add(upvote)
-			print "%r has added elevation as a reason" % id
+			print "Point with id %r has added elevation as a reason" % id
 
 	model.session.commit()
 	print "All of the points have been added to the db as elevation_reason."
 
+
 def update_elevation():
+	"""If the elevation of the current point is similar to the elevation surrounding it
+	the point is flagged in the database as elevation_reason = True"""
+
 	the_app = model.CrowdSourced()
 	all_elevation = the_app.to_dict()
 	#print all_elevation
