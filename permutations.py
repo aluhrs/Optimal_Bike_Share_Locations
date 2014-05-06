@@ -3,18 +3,26 @@
 from itertools import permutations
 from itertools import product
 
-def per():
-	l = ["e", "f", "g", "o", "t"]
-
-	n_l = []
-	for x in range(6):
-		for p in permutations(l, x):
-			n_l.append(tuple(sorted(p)))
-			#print n_l
-
-	return n_l
+def per(letters):
+	"""Returns a list of tuples of all possible permutations of a given list, 
+	including repeats"""
 	
-def tuples(li):
+	#letters = ["e", "f", "g", "o", "t"]
+
+	list_of_permuations = []
+	for letter in range(len(letters)):
+		for permutation in permutations(letters, letter):
+			list_of_permuations.append(tuple(sorted(permutation)))
+			#print list_of_permuations
+
+	return list_of_permuations
+	
+def unique_permutations(li):
+	"""Returns a list of tuples of possible permuations of a given, and it
+	does not include repeats. The function loops through the given list
+	and only adds unique permuations to the list. The function then 
+	returns a sorted list of the keys."""
+
 	tu = {}
 	for l in range(len(li)):
 		if len(li[l]) > 0:
@@ -27,8 +35,8 @@ def tuples(li):
 
 
 if __name__ == "__main__":
-	perm = per()
-	tup = tuples(perm)
+	perm = per(["e", "f", "g", "o", "t"])
+	tup = unique_permutations(perm)
 
 
 # []
