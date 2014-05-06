@@ -15,6 +15,7 @@ import model
 import os
 import urllib2
 
+# this should be inside of a function
 points = model.session.query(model.CrowdSourced).all()
 
 
