@@ -17,27 +17,26 @@ def per(letters):
 
 	return list_of_permuations
 	
-def unique_permutations(li):
+def unique_permutations(list_of_permuations):
 	"""Returns a list of tuples of possible permuations of a given, and it
 	does not include repeats. The function loops through the given list
 	and only adds unique permuations to the list. The function then 
 	returns a sorted list of the keys."""
 
-	tu = {}
-	for l in range(len(li)):
-		if len(li[l]) > 0:
-			if tu.get(li[l]):
-				tu[li[l]] += 1
+	dictionary_of_permuations = {}
+	for permuation in range(len(list_of_permuations)):
+		if len(list_of_permuations[permuation]) > 0:
+			if dictionary_of_permuations.get(list_of_permuations[permuation]):
+				dictionary_of_permuations[list_of_permuations[permuation]] += 1
    			else:
-   				tu[li[l]] = 1
+   				dictionary_of_permuations[list_of_permuations[permuation]] = 1
 
-   	return sorted(tu.keys())
+   	return sorted(dictionary_of_permuations.keys())
 
 
 if __name__ == "__main__":
 	perm = per(["e", "f", "g", "o", "t"])
 	tup = unique_permutations(perm)
-
 
 # []
 # ['e']
